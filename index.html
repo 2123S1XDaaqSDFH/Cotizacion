@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOEX | Propuesta Exclusiva para The Glasses Store</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@100;200;300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold: #c5a059;
+            --gold-light: #e3c186;
+            --dark: #050505;
+            --dark-soft: #0a0a0a;
+            --cream: #f4f4f4;
+            --transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        * { cursor: none !important; margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            color: var(--cream);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, .luxury-font { 
+            font-family: 'Cinzel', serif; 
+            letter-spacing: 0.2em; 
+            text-transform: uppercase;
+        }
+
+        /* --- LOADER CINEMÁTICO --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease;
+        }
+        .loader-brand { font-size: 3rem; margin-bottom: 2rem; }
+        .loader-track { width: 300px; height: 1px; background: rgba(197, 160, 89, 0.1); position: relative; }
+        .loader-bar { position: absolute; left: 0; top: 0; height: 100%; background: var(--gold); width: 0%; }
+
+        /* --- CURSOR PERSONALIZADO --- */
+        #cursor {
+            width: 10px; height: 10px; background: var(--gold);
+            border-radius: 50%; position: fixed; pointer-events: none;
+            z-index: 10000; mix-blend-mode: difference;
+        }
+        #cursor-follower {
+            width: 50px; height: 50px; border: 0.5px solid var(--gold);
+            border-radius: 50%; position: fixed; pointer-events: none;
+            z-index: 9999; transition: transform 0.2s ease-out;
+        }
+
+        /* --- ESTÉTICA GENERAL --- */
+        .text-gold {
+            background: linear-gradient(135deg, #c5a059 0%, #f9f295 50%, #c5a059 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+        }
+
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+
+        .section-p { padding: 120px 0; }
+
+        .btn-luxury {
+            border: 1px solid var(--gold);
+            padding: 20px 50px;
+            font-size: 10px;
+            letter-spacing: 0.5em;
+            color: var(--gold);
+            background: transparent;
+            transition: var(--transition);
+            display: inline-block;
+            position: relative;
+        }
+        .btn-luxury:hover { background: var(--gold); color: #000; box-shadow: 0 0 30px rgba(197, 160, 89, 0.3); }
+
+        .card-service {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(197, 160, 89, 0.05);
+            padding: 60px 40px;
+            transition: var(--transition);
+            height: 100%;
+        }
+        .card-service:hover {
+            background: rgba(197, 160, 89, 0.03);
+            border-color: var(--gold);
+            transform: translateY(-20px);
+        }
+
+        .reveal { clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); transition: clip-path 1.5s ease; }
+        .reveal.active { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-brand text-gold luxury-font">JOEX</div>
+        <div class="loader-track"><div class="loader-bar" id="load-bar"></div></div>
+        <div class="mt-8 text-[10px] tracking-[1em] uppercase opacity-40 font-light">
+            Gracias por elegirnos Juan Palacio...
+        </div>
+    </div>
+
+    <div id="cursor"></div>
+    <div id="cursor-follower"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <nav class="fixed w-full z-[500] py-10 px-16 transition-all duration-700" id="navbar">
+        <div class="max-w-[1800px] mx-auto flex justify-between items-center">
+            <div class="text-4xl font-black text-gold luxury-font tracking-[0.3em]">JOEX</div>
+            <div class="hidden lg:flex space-x-12 uppercase text-[9px] tracking-[0.5em] font-light text-gray-400">
+                <span>The Glasses Store × JOEX</span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="min-h-screen flex flex-col justify-center items-center relative text-center px-6">
+        <div class="z-10 mt-20">
+            <p class="text-[10px] uppercase tracking-[1em] text-gold mb-16 opacity-0 translate-y-10" id="hero-tag">
+                PARA: JUAN PALACIO • THE GLASSES STORE
+            </p>
+            <h1 class="text-5xl md:text-[6vw] font-black leading-[1.1] mb-16 opacity-0" id="hero-main">
+                TU VISIÓN, <br> <span class="text-gold">NUESTRA INGENIERÍA</span>
+            </h1>
+            <div class="h-[1px] w-32 bg-gold mx-auto mb-16"></div>
+            <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-20 font-light leading-relaxed tracking-wider opacity-0" id="hero-desc">
+                Juan, sabemos que no es una decisión sencilla ni fácil, pero queremos que sepas que <strong>te apoyamos en todo lo que necesites</strong>. Por eso, hemos curado estas 3 arquitecturas digitales para llevar a The Glasses Store al siguiente nivel.
+            </p>
+            <div class="opacity-0" id="hero-btns">
+                <a href="#cotizaciones" class="btn-luxury">Ver Mis Opciones</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="cotizaciones" class="section-p bg-[#030303]">
+        <div class="container mx-auto px-12">
+            <div class="text-center mb-40">
+                <h2 class="text-5xl font-bold luxury-font mb-8">Arquitecturas <span class="text-gold">Propuestas</span></h2>
+                <p class="text-gray-500 uppercase tracking-[0.5em] text-xs">Selección exclusiva para el éxito digital</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="card-service">
+                    <span class="text-gold text-xs tracking-[0.5em] block mb-12">01 / ESENCIAL</span>
+                    <h3 class="text-2xl font-bold mb-8">Presencia Pro</h3>
+                    <div class="text-4xl font-bold text-gold mb-10">$3.999.999</div>
+                    <ul class="text-[10px] space-y-6 tracking-[0.2em] uppercase opacity-60 mb-12">
+                        <li>• Landing Page Alta Conversión</li>
+                        <li>• Catálogo Visual de Monturas</li>
+                        <li>• WhatsApp Direct Marketing</li>
+                        <li>• Optimización Mobile</li>
+                    </ul>
+                    <p class="text-[9px] text-gray-600 italic leading-relaxed">
+                        * Videos e instalación multimedia se gestionan bajo requerimiento adicional.
+                    </p>
+                </div>
+
+                <div class="card-service border-gold/20 bg-white/[0.01]">
+                    <span class="text-gold text-xs tracking-[0.5em] block mb-12">02 / DINÁMICA</span>
+                    <h3 class="text-2xl font-bold mb-8">Evolución Visual</h3>
+                    <div class="text-4xl font-bold text-gold mb-10">$5.999.999</div>
+                    <ul class="text-[10px] space-y-6 tracking-[0.2em] uppercase opacity-80 mb-12">
+                        <li>• Todo lo del Plan Esencial</li>
+                        <li>• Animaciones de Prestigio (GSAP)</li>
+                        <li>• Captura Inteligente de Pacientes</li>
+                        <li>• UI/UX Luxury Clinic Design</li>
+                    </ul>
+                    <p class="text-[9px] text-gray-600 italic leading-relaxed">
+                        * Integración de música sujeta a Sayco y Acimpro + instalación.
+                    </p>
+                </div>
+
+                <div class="card-service border-gold shadow-[0_0_50px_rgba(197,160,89,0.1)]">
+                    <span class="text-gold text-xs tracking-[0.5em] block mb-12">03 / ÉLITE AR</span>
+                    <h3 class="text-2xl font-bold mb-8">Gabinete Élite</h3>
+                    <div class="text-4xl font-bold text-gold mb-10">$7.999.999</div>
+                    <ul class="text-[10px] space-y-6 tracking-[0.2em] uppercase text-gold mb-12">
+                        <li>• Realidad Aumentada (Probador AR)</li>
+                        <li>• E-Commerce Full con Pasarela</li>
+                        <li>• Bot de Agendamiento 24/7</li>
+                        <li>• Simulador Transitions Dinámico</li>
+                    </ul>
+                    <p class="text-[11px] text-gold font-bold tracking-widest text-center mt-4">NUESTRA RECOMENDACIÓN</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-p container mx-auto px-12 max-w-5xl">
+        <div class="border border-gold/10 p-16 bg-[#080808]">
+            <h4 class="text-gold luxury-font text-sm mb-12 tracking-widest text-center">Términos de la Firma</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-[10px] tracking-[0.2em] uppercase text-gray-500">
+                <ul class="space-y-6">
+                    <li>• Anticipo del 70% para inicio de obra.</li>
+                    <li>• Dominio y Hosting se gestionan por separado.</li>
+                    <li>• Cualquier cambio y modificación tienen cobro adicional.</li>
+                </ul>
+                <ul class="space-y-6">
+                    <li>• Videos (YouTube/Instagram) incluyen cobro de instalación.</li>
+                    <li>• No se realizan reembolsos tras el inicio.</li>
+                    <li>• Entrega de repositorio final al completar el 100%.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-p bg-white text-black text-center">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl md:text-6xl font-black luxury-font mb-12 reveal">Esperamos que seas <br>parte de nuestro <br><span class="text-gold">Gabinete Élite</span></h2>
+            <p class="text-gray-500 text-lg max-w-2xl mx-auto mb-20 tracking-wide font-light">
+                Bienvenido a JOEX. Forjando la élite del futuro digital. Juan, estamos listos para empezar cuando tú lo estés.
+            </p>
+            <a href="https://wa.me/573184499437" class="bg-black text-white px-16 py-8 text-xs tracking-[0.6em] uppercase hover:bg-gold transition-all duration-700">
+                Confirmar Inicio de Proyecto
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-20 bg-black border-t border-white/5 text-center">
+        <div class="luxury-font text-2xl text-gold mb-8">JOEX</div>
+        <p class="text-[8px] text-gray-700 tracking-[0.5em] uppercase">JOEX International © 2026 • Private Proposal for The Glasses Store</p>
+    </footer>
+
+    <script>
+        // 1. CARGA
+        window.addEventListener('load', () => {
+            let progress = 0;
+            const bar = document.getElementById('load-bar');
+            const timer = setInterval(() => {
+                progress += 5;
+                if (progress > 100) progress = 100;
+                bar.style.width = progress + '%';
+                if (progress === 100) {
+                    clearInterval(timer);
+                    gsap.to('#loader', { opacity: 0, duration: 1.5, onComplete: () => {
+                        document.getElementById('loader').style.display = 'none';
+                        startAnimations();
+                    }});
+                }
+            }, 50);
+        });
+
+        // 2. CURSOR
+        const cur = document.getElementById('cursor');
+        const fol = document.getElementById('cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cur, { x: e.clientX, y: e.clientY, duration: 0.1 });
+            gsap.to(fol, { x: e.clientX - 25, y: e.clientY - 25, duration: 0.4 });
+        });
+
+        // 3. THREE.JS BG
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = new Float32Array(3000 * 3);
+        for(let i=0; i<9000; i++) { starPos[i] = (Math.random() - 0.5) * 2000; }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xc5a059, size: 1, transparent: true, opacity: 0.4 });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+        camera.position.z = 500;
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 4. GSAP
+        gsap.registerPlugin(ScrollTrigger);
+        function startAnimations() {
+            const tl = gsap.timeline();
+            tl.to("#hero-tag", { opacity: 1, y: 0, duration: 1 })
+              .to("#hero-main", { opacity: 1, duration: 1.5 }, "-=0.5")
+              .to("#hero-desc", { opacity: 1, duration: 1 }, "-=0.5")
+              .to("#hero-btns", { opacity: 1, duration: 1 }, "-=0.5");
+
+            document.querySelectorAll('.reveal').forEach(el => {
+                ScrollTrigger.create({
+                    trigger: el, start: "top 90%",
+                    onEnter: () => el.classList.add('active')
+                });
+            });
+        }
+    </script>
+</body>
+</html>
