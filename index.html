@@ -3,208 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOEX | Propuesta Disruptiva The Glasses Store</title>
+    <title>JOEX | Propuesta Final The Glasses Store</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;900&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* SISTEMA DE DISEÑO JOEX v2.0 
-           Colores inspirados en The Glasses Store 
-        */
         :root {
-            --primary: #003366;    /* Azul Royal */
-            --secondary: #00509d;  /* Azul Vibrante */
-            --accent: #00a8e8;     /* Celeste Glitch */
+            --primary: #001d3d;    /* Azul Oscuro (Máximo contraste) */
+            --secondary: #003566;  /* Azul Royal */
+            --accent: #0077b6;     /* Azul para resaltar */
             --white: #ffffff;
-            --soft-gray: #f8fafc;
-            --dark: #001d3d;
-            --glitch-speed: 0.2s;
+            --soft-blue: #f0f7ff;
         }
 
-        /* Reset y Cursor Personalizado */
-        * { 
-            cursor: none !important; 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            -webkit-font-smoothing: antialiased;
-        }
+        * { cursor: none !important; box-sizing: border-box; }
 
         body { 
             background-color: var(--white); 
             font-family: 'Montserrat', sans-serif; 
-            overflow-x: hidden;
-            color: var(--dark);
+            color: var(--primary);
+            line-height: 1.7;
         }
 
         .luxury-font { 
             font-family: 'Cinzel', serif; 
             text-transform: uppercase; 
-            letter-spacing: 0.3em;
+            letter-spacing: 0.25em;
         }
 
-        /* --- LOADER SECUENCIAL AVANZADO --- */
-        #loader {
-            position: fixed; 
-            inset: 0; 
-            background: white; 
-            z-index: 9999;
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center;
+        /* --- MEJORA DE LEGIBILIDAD --- */
+        .text-readable {
+            color: var(--secondary);
+            font-weight: 500;
         }
 
-        .loader-logo-container {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #loader-progress-bar {
-            position: absolute;
-            bottom: -40px;
-            width: 200px;
-            height: 2px;
-            background: rgba(0, 51, 102, 0.1);
-        }
-
-        #loader-progress-inner {
-            width: 0%;
-            height: 100%;
-            background: var(--primary);
-        }
-
-        /* --- SISTEMA DE CURSOR DUAL --- */
-        #cursor-dot {
-            width: 8px; height: 8px; background: var(--primary);
-            border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000;
-        }
-        #cursor-outline {
-            width: 50px; height: 50px; border: 1px solid var(--secondary);
-            border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999;
-            transition: transform 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-        }
-
-        /* --- CANVAS Y FONDOS --- */
-        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.25; }
-        
-        /* --- ANIMACIONES DE INTERFAZ --- */
-        .glass-header {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 51, 102, 0.05);
-        }
-
-        .hero-title {
-            font-size: clamp(3rem, 8vw, 9rem);
+        .hero-main-title {
+            font-size: clamp(2.5rem, 9vw, 8rem);
             font-weight: 900;
-            line-height: 0.9;
+            line-height: 0.85;
             color: var(--primary);
+            text-shadow: 0 10px 30px rgba(0, 29, 61, 0.05);
         }
 
-        /* --- EFECTO GLITCH DE RUPTURA --- */
-        #glitch-overlay {
-            position: fixed; inset: 0; background: var(--primary); z-index: 9000;
-            display: none; opacity: 0; pointer-events: none;
+        /* --- LOADER --- */
+        #loader {
+            position: fixed; inset: 0; background: white; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        .glitch-bar {
-            position: absolute; width: 100%; height: 10px; background: var(--accent);
-            opacity: 0.5;
-        }
+        /* --- CURSOR --- */
+        #cursor-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000; }
+        #cursor-outline { width: 40px; height: 40px; border: 1.5px solid var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s linear; }
 
-        /* --- TARJETAS DE PROPUESTA --- */
-        .pricing-card {
-            background: var(--white);
-            border: 1px solid rgba(0, 51, 102, 0.08);
-            padding: 80px 50px;
+        /* --- BOTONES Y NAV --- */
+        .nav-link {
+            transition: all 0.4s;
             position: relative;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
         }
-
-        .pricing-card::before {
-            content: "";
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(0, 80, 157, 0.03) 0%, rgba(255,255,255,0) 100%);
-            z-index: 0;
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0%; height: 2px; background: var(--accent); transition: 0.3s;
         }
+        .nav-link:hover::after { width: 100%; }
 
-        .pricing-card:hover {
-            transform: translateY(-30px);
-            border-color: var(--primary);
-            box-shadow: 0 40px 80px rgba(0, 31, 61, 0.08);
-        }
-
-        .card-popular {
-            background: var(--primary);
-            color: var(--white);
-            transform: scale(1.05);
-            z-index: 10;
-            border: none;
-        }
-
-        .card-popular .text-gray-500 { color: rgba(255,255,255,0.6); }
-        .card-popular .text-blue-900 { color: var(--white); }
-
-        /* --- BOTONES --- */
         .btn-luxury {
-            position: relative;
-            padding: 25px 60px;
-            font-size: 11px;
-            letter-spacing: 0.5em;
-            text-transform: uppercase;
+            border: 2px solid var(--primary);
+            padding: 18px 45px;
+            font-size: 10px;
             font-weight: 800;
-            border: 1px solid var(--primary);
+            letter-spacing: 0.4em;
+            transition: 0.5s;
             background: transparent;
             color: var(--primary);
-            transition: all 0.4s;
-            display: inline-block;
         }
+        .btn-luxury:hover { background: var(--primary); color: white; transform: scale(1.05); }
 
-        .btn-luxury:hover {
-            background: var(--primary);
-            color: white;
-            padding: 25px 80px;
+        /* --- SECCIONES --- */
+        .glass-card {
+            background: white;
+            border: 1px solid rgba(0, 53, 102, 0.1);
+            padding: 60px 40px;
+            transition: 0.6s;
         }
+        .glass-card:hover { border-color: var(--accent); box-shadow: 0 30px 60px rgba(0,0,0,0.05); }
 
-        /* --- SECCIÓN LEGAL --- */
-        .legal-box {
-            background: var(--soft-gray);
-            border-left: 4px solid var(--primary);
-            padding: 60px;
-            font-size: 12px;
-            line-height: 2;
-            letter-spacing: 0.1em;
-        }
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
 
-        /* --- SCROLL INDICATOR --- */
-        .scroll-line {
-            width: 1px; height: 100px; background: rgba(0, 51, 102, 0.2);
-            margin: 40px auto; position: relative; overflow: hidden;
-        }
-        .scroll-line::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary); animation: scrollDown 2s infinite;
-        }
-
-        @keyframes scrollDown {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-
-        /* Clases de utilidad para GSAP */
-        .reveal-up { opacity: 0; transform: translateY(50px); }
+        /* --- EFECTO GLITCH --- */
+        #glitch-overlay { position: fixed; inset: 0; background: var(--primary); z-index: 9000; display: none; opacity: 0; }
     </style>
 </head>
 <body>
@@ -214,14 +104,8 @@
     </audio>
 
     <div id="loader">
-        <div class="loader-logo-container">
-            <img src="Theglasses.jpg" id="loader-img" class="w-full opacity-0" alt="The Glasses Store">
-        </div>
-        <div id="loader-text-brand" class="luxury-font text-blue-900 mt-10 font-bold opacity-0">JOEX STUDIO</div>
-        <div id="loader-welcome" class="luxury-font text-blue-400 mt-4 text-sm opacity-0 tracking-[0.8em]">Bienvenido Juan Palacio</div>
-        <div id="loader-progress-bar">
-            <div id="loader-progress-inner"></div>
-        </div>
+        <img src="Theglasses.jpg" class="w-32 mb-8 opacity-0" id="load-logo">
+        <div class="luxury-font text-sm tracking-[1em] text-blue-900 opacity-0" id="load-name">JOEX</div>
     </div>
 
     <div id="cursor-dot"></div>
@@ -229,359 +113,189 @@
     <div id="glitch-overlay"></div>
     <canvas id="bg-canvas"></canvas>
 
-    <div onclick="toggleMusic()" class="fixed bottom-10 right-10 z-[9995] group">
-        <div class="w-16 h-16 bg-white border border-blue-900/10 flex items-center justify-center rounded-full shadow-2xl transition-all group-hover:scale-110">
-            <i id="music-btn-icon" class="fas fa-play text-blue-900"></i>
+    <nav class="fixed w-full z-[1000] py-10 px-12 md:px-20 bg-white/80 backdrop-blur-md flex justify-between items-center border-b border-blue-900/5">
+        <div class="luxury-font font-black text-xl text-blue-900">JOEX <span class="font-light opacity-40">×</span> TGS</div>
+        
+        <div class="hidden lg:flex space-x-12 text-[10px] font-black tracking-[0.3em] text-blue-900/80 uppercase">
+            <a href="#hero" class="nav-link">01. Visión</a>
+            <a href="#arquitectura" class="nav-link">02. Arquitectura</a>
+            <a href="#cotizaciones" class="nav-link">03. Inversión</a>
+            <a href="#legal" class="nav-link">04. Legal</a>
         </div>
-        <span class="absolute right-20 top-5 text-[9px] uppercase tracking-widest text-blue-900 opacity-0 group-hover:opacity-100 transition-all">Paganini - La Campanella</span>
-    </div>
 
-    <nav class="fixed w-full z-[1000] py-10 px-20 glass-header flex justify-between items-center">
-        <div class="luxury-font font-black text-2xl text-blue-900 tracking-tighter">JOEX <span class="font-light text-blue-400">×</span> TGS</div>
-        <div class="hidden lg:flex space-x-12 text-[10px] font-bold tracking-[0.4em] text-blue-900/60 uppercase">
-            <span>01. Visión</span>
-            <span>02. Arquitectura</span>
-            <span>03. Inversión</span>
-            <span>04. Legal</span>
-        </div>
-        <a href="https://wa.me/573184499437" class="text-[10px] font-black tracking-widest border-b-2 border-blue-900 text-blue-900 pb-1">CONTACTO DIRECTO</a>
+        <a href="https://wa.me/573184499437?text=Hola%20Julián,%20estoy%20viendo%20la%20propuesta%20de%20JOEX." target="_blank" class="luxury-font text-[10px] font-black border-b-2 border-blue-900 pb-1 text-blue-900 hover:text-blue-500 hover:border-blue-500 transition-all">
+            CONTACTO DIRECTO
+        </a>
     </nav>
 
     <main>
-        
-        <section id="hero" class="min-h-screen flex flex-col justify-center items-center px-10 relative">
+        <section id="hero" class="min-h-screen flex flex-col justify-center items-center px-10 pt-20">
             <div class="max-w-[1400px] w-full text-center">
-                <p id="hero-tag" class="luxury-font text-blue-400 text-xs mb-10 opacity-0">Propuesta de Identidad Digital 2026</p>
-                <h1 class="hero-title luxury-font opacity-0" id="hero-main-text">
-                    VISIÓN DE <br> <span class="text-blue-500 font-light italic">PRECISIÓN</span>
+                <p class="luxury-font text-blue-500 text-[10px] mb-8 tracking-[1.2em] opacity-0 reveal">Precision Digital Office</p>
+                <h1 class="hero-main-title luxury-font opacity-0 reveal">
+                    VISIÓN DE <br> <span class="italic font-light text-blue-400">PRECISIÓN</span>
                 </h1>
-                <p id="hero-description" class="text-gray-400 max-w-2xl mx-auto mt-16 text-lg font-light leading-loose opacity-0">
+                <p class="text-readable max-w-3xl mx-auto mt-12 text-lg md:text-xl opacity-0 reveal leading-relaxed">
                     Juan, el mercado de la óptica en Medellín está saturado de lo común. <br>
-                    <strong>The Glasses Store</strong> no es común. Es el momento de que tu plataforma digital refleje la calidad de tus monturas y la precisión de tus diagnósticos.
+                    <strong>The Glasses Store</strong> no es común. Es el momento de que tu plataforma digital refleje la calidad de tus monturas.
                 </p>
-                <div id="hero-btn-wrap" class="mt-20 opacity-0">
-                    <button onclick="executeGlitchTransition()" class="btn-luxury">Explorar el ecosistema</button>
-                    <div class="scroll-line"></div>
+                <div class="mt-16 opacity-0 reveal">
+                    <button onclick="glitchNav('#cotizaciones')" class="btn-luxury luxury-font">Ver Mis Opciones</button>
                 </div>
             </div>
         </section>
 
-        <section class="py-40 px-10 bg-white">
+        <section id="arquitectura" class="py-40 bg-soft-blue px-10">
             <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-                <div class="reveal-up">
-                    <h2 class="luxury-font text-4xl text-blue-900 mb-10">La Estética del <br> Detalle</h2>
-                    <p class="text-gray-500 leading-relaxed mb-8">
-                        No diseñamos páginas web; construimos vitrinas digitales de lujo que capturan la atención del paciente desde el primer milisegundo. Utilizamos tecnología <strong>GSAP</strong> para que cada interacción sea tan fluida como el ajuste de un lente de alta gama.
+                <div class="reveal">
+                    <h2 class="luxury-font text-4xl text-blue-900 mb-8 leading-tight">Arquitectura <br> de Lujo Clínico</h2>
+                    <p class="text-readable mb-10 text-gray-600">
+                        Cada pixel es un lente pulido a la medida. Implementamos una interfaz intuitiva donde el paciente no solo ve gafas, sino que vive una experiencia de diagnóstico visual digital.
                     </p>
-                    <div class="flex items-center space-x-6">
-                        <div class="h-[1px] w-20 bg-blue-900"></div>
-                        <span class="luxury-font text-[10px] text-blue-900">Protocolo JOEX</span>
-                    </div>
+                    <ul class="space-y-4 text-[11px] font-bold tracking-widest text-blue-900 uppercase">
+                        <li><i class="fa-solid fa-circle-check mr-2 text-blue-400"></i> Optimización móvil ultra-rápida</li>
+                        <li><i class="fa-solid fa-circle-check mr-2 text-blue-400"></i> Renderizado de productos HD</li>
+                    </ul>
                 </div>
-                <div class="relative reveal-up">
-                    <div class="aspect-[4/5] bg-blue-50 flex items-center justify-center border border-blue-900/5">
-                        <i class="fa-solid fa-glasses text-9xl text-blue-100"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="cotizaciones" class="py-40 bg-soft-gray relative overflow-hidden">
-            <div class="container mx-auto px-10 relative z-10">
-                <div class="text-center mb-32">
-                    <h2 class="luxury-font text-5xl text-blue-900 mb-6">Gabinete de Opciones</h2>
-                    <p class="text-blue-400 uppercase tracking-[0.6em] text-[10px] font-bold">Escalabilidad de Negocio</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
-                    
-                    <div class="pricing-card reveal-up">
-                        <div class="mb-10 flex justify-between items-start">
-                            <span class="text-blue-400 text-[10px] tracking-widest font-black uppercase">01 / Esencial</span>
-                            <i class="fa-solid fa-eye text-blue-900/10 text-4xl"></i>
-                        </div>
-                        <h3 class="luxury-font text-2xl font-black text-blue-900 mb-4">PRESENCIA PRO</h3>
-                        <p class="text-gray-400 text-sm mb-12 h-20">Ideal para validar el mercado digital con una estética impecable y catálogo visual.</p>
-                        <div class="text-5xl font-black text-blue-900 mb-12 tracking-tighter">
-                            <span class="text-lg align-top">$</span>3.999.999
-                        </div>
-                        <ul class="space-y-6 text-[10px] tracking-[0.2em] uppercase text-gray-500 font-bold mb-16">
-                            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-4"></i> Landing de Alta Gama</li>
-                            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-4"></i> Catálogo de Monturas</li>
-                            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-4"></i> Integración WhatsApp Business</li>
-                            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-4"></i> Hosting & SSL (1er Año)</li>
-                        </ul>
-                        <a href="https://wa.me/573184499437" class="text-[10px] font-black tracking-widest text-blue-900 border-b-2 border-blue-900 pb-2 hover:text-blue-400 hover:border-blue-400 transition-all">SELECCIONAR PLAN</a>
-                    </div>
-
-                    <div class="pricing-card card-popular reveal-up">
-                        <div class="mb-10 flex justify-between items-start">
-                            <span class="text-blue-200 text-[10px] tracking-widest font-black uppercase">02 / Dinámico</span>
-                            <div class="bg-white/10 px-4 py-1 text-[8px] tracking-[0.4em] uppercase font-bold">MÁS ELEGIDO</div>
-                        </div>
-                        <h3 class="luxury-font text-2xl font-black mb-4">EVOLUCIÓN VISUAL</h3>
-                        <p class="text-blue-200 text-sm mb-12 h-20">Experiencia inmersiva con animaciones que guían al cliente hacia la compra.</p>
-                        <div class="text-5xl font-black mb-12 tracking-tighter">
-                            <span class="text-lg align-top">$</span>5.999.999
-                        </div>
-                        <ul class="space-y-6 text-[10px] tracking-[0.2em] uppercase text-blue-100 font-bold mb-16">
-                            <li class="flex items-center"><i class="fa-solid fa-bolt text-blue-300 mr-4"></i> Animaciones Fluidas GSAP</li>
-                            <li class="flex items-center"><i class="fa-solid fa-bolt text-blue-300 mr-4"></i> Sistema de Filtros Avanzado</li>
-                            <li class="flex items-center"><i class="fa-solid fa-bolt text-blue-300 mr-4"></i> SEO Local para Ópticas</li>
-                            <li class="flex items-center"><i class="fa-solid fa-bolt text-blue-300 mr-4"></i> Dashboard de Ventas/Contactos</li>
-                        </ul>
-                        <a href="https://wa.me/573184499437" class="text-[10px] font-black tracking-widest text-white border-b-2 border-white pb-2 hover:opacity-70 transition-all">SELECCIONAR PLAN</a>
-                    </div>
-
-                    <div class="pricing-card reveal-up">
-                        <div class="mb-10 flex justify-between items-start">
-                            <span class="text-blue-400 text-[10px] tracking-widest font-black uppercase">03 / Élite</span>
-                            <i class="fa-solid fa-crown text-blue-900/10 text-4xl"></i>
-                        </div>
-                        <h3 class="luxury-font text-2xl font-black text-blue-900 mb-4">GABINETE ÉLITE</h3>
-                        <p class="text-gray-400 text-sm mb-12 h-20">El estándar máximo de la industria óptica digital. Innovación pura.</p>
-                        <div class="text-5xl font-black text-blue-900 mb-12 tracking-tighter">
-                            <span class="text-lg align-top">$</span>7.999.999
-                        </div>
-                        <ul class="space-y-6 text-[10px] tracking-[0.2em] uppercase text-gray-500 font-bold mb-16">
-                            <li class="flex items-center"><i class="fa-solid fa-cube text-blue-400 mr-4"></i> Probador en Realidad Aumentada</li>
-                            <li class="flex items-center"><i class="fa-solid fa-cube text-blue-400 mr-4"></i> E-Commerce Completo (Pagos Online)</li>
-                            <li class="flex items-center"><i class="fa-solid fa-cube text-blue-400 mr-4"></i> Agendamiento de Citas AI</li>
-                            <li class="flex items-center"><i class="fa-solid fa-cube text-blue-400 mr-4"></i> Mantenimiento VIP 6 Meses</li>
-                        </ul>
-                        <a href="https://wa.me/573184499437" class="text-[10px] font-black tracking-widest text-blue-900 border-b-2 border-blue-900 pb-2 hover:text-blue-400 hover:border-blue-400 transition-all">SELECCIONAR PLAN</a>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <section class="py-40 bg-white">
-            <div class="max-w-5xl mx-auto px-10">
-                <div class="reveal-up mb-20 text-center">
-                    <h2 class="luxury-font text-3xl text-blue-900 mb-4">Términos del Protocolo</h2>
-                    <p class="text-gray-400 text-xs tracking-widest uppercase">Transparencia Total • JOEX Studio</p>
-                </div>
-                
-                <div class="legal-box reveal-up">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-                        <div class="space-y-10">
-                            <div>
-                                <h4 class="font-bold text-blue-900 mb-4 uppercase tracking-widest">Acompañamiento Técnico</h4>
-                                <p class="text-gray-500">Se requiere un anticipo del 70% para dar inicio a la arquitectura de la plataforma. El 30% restante se cancela contra entrega y capacitación de uso.</p>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-blue-900 mb-4 uppercase tracking-widest">Estructura de Gastos</h4>
-                                <p class="text-gray-500">El valor del dominio (.com, .com.co) y hosting corporativo se factura por separado de acuerdo al proveedor elegido, garantizando que la propiedad sea 100% de Juan Palacio.</p>
-                            </div>
-                        </div>
-                        <div class="space-y-10">
-                            <div>
-                                <h4 class="font-bold text-blue-900 mb-4 uppercase tracking-widest">Música y Derechos</h4>
-                                <p class="text-gray-500">La implementación de música ambiental automatizada conlleva una responsabilidad con Sayco/Acimpro. JOEX se encarga de la instalación técnica, la gestión legal es del cliente.</p>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-blue-900 mb-4 uppercase tracking-widest">Iteraciones de Diseño</h4>
-                                <p class="text-gray-500">Se incluyen 2 rondas de ajustes estructurales. Cambios posteriores que modifiquen la arquitectura inicial tendrán un costo adicional de $150.000 por hora de desarrollo.</p>
-                            </div>
-                        </div>
+                <div class="relative reveal">
+                    <div class="aspect-square bg-white shadow-2xl flex items-center justify-center p-20 border border-blue-100">
+                        <i class="fa-solid fa-glasses text-[12rem] text-blue-50"></i>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="py-60 bg-blue-900 text-white text-center px-10">
-            <div class="max-w-4xl mx-auto reveal-up">
-                <p class="luxury-font text-blue-300 text-xs mb-10 tracking-[1em]">El momento es ahora</p>
-                <h2 class="text-5xl md:text-8xl font-black luxury-font mb-16 leading-tight">¿LISTO PARA <br> EL SIGUIENTE <br> <span class="italic font-light">NIVEL?</span></h2>
-                <a href="https://wa.me/573184499437" class="px-20 py-8 border-2 border-white text-xs tracking-[0.5em] font-black uppercase hover:bg-white hover:text-blue-900 transition-all duration-500">EMPEZAR PROYECTO</a>
+        <section id="cotizaciones" class="py-40 px-10 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-24 reveal">
+                    <h2 class="luxury-font text-5xl text-blue-900 mb-6">Inversión y Futuro</h2>
+                    <div class="h-1 w-20 bg-blue-500 mx-auto"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div class="glass-card reveal">
+                        <span class="text-blue-400 text-[10px] tracking-widest font-black uppercase block mb-10">Opción 01 / Esencial</span>
+                        <h3 class="luxury-font text-2xl font-black text-blue-900 mb-6">PRESTIGIO</h3>
+                        <div class="text-5xl font-black text-blue-900 mb-10">$3.999.999</div>
+                        <p class="text-gray-500 text-sm mb-10">Estructura sólida para posicionamiento de marca local.</p>
+                        <a href="https://wa.me/573184499437?text=Juan,%20quiero%20la%20Opción%20Esencial" class="text-[10px] font-bold tracking-widest border-b-2 border-blue-900 pb-2">ELEGIR PLAN</a>
+                    </div>
+
+                    <div class="glass-card bg-blue-900 text-white border-none shadow-2xl reveal scale-105">
+                        <span class="text-blue-300 text-[10px] tracking-widest font-black uppercase block mb-10">Opción 02 / Recomendada</span>
+                        <h3 class="luxury-font text-2xl font-black mb-6">DINÁMICA PRO</h3>
+                        <div class="text-5xl font-black mb-10">$5.999.999</div>
+                        <p class="text-blue-100 text-sm mb-10">Animaciones de alto impacto y captación de leads.</p>
+                        <a href="https://wa.me/573184499437?text=Juan,%20quiero%20la%20Opción%20Dinámica" class="text-[10px] font-bold tracking-widest border-b-2 border-white pb-2">ELEGIR PLAN</a>
+                    </div>
+
+                    <div class="glass-card reveal">
+                        <span class="text-blue-400 text-[10px] tracking-widest font-black uppercase block mb-10">Opción 03 / Premium</span>
+                        <h3 class="luxury-font text-2xl font-black text-blue-900 mb-6">ÉLITE AR</h3>
+                        <div class="text-5xl font-black text-blue-900 mb-10">$7.999.999</div>
+                        <p class="text-gray-500 text-sm mb-10">Probador virtual y agendamiento inteligente.</p>
+                        <a href="https://wa.me/573184499437?text=Juan,%20quiero%20la%20Opción%20Elite" class="text-[10px] font-bold tracking-widest border-b-2 border-blue-900 pb-2">ELEGIR PLAN</a>
+                    </div>
+                </div>
             </div>
         </section>
 
+        <section id="legal" class="py-40 bg-soft-blue px-10">
+            <div class="max-w-4xl mx-auto glass-card reveal">
+                <h4 class="luxury-font text-center text-blue-900 mb-16 text-xl">Protocolo de Negociación</h4>
+                <div class="grid md:grid-cols-2 gap-12 text-[11px] leading-loose text-gray-600 uppercase tracking-widest font-medium">
+                    <ul class="space-y-6">
+                        <li>• Anticipo del 70% para inicio de obra digital.</li>
+                        <li>• El dominio y hosting se facturan por separado.</li>
+                        <li>• 2 rondas de cambios estructurales incluidas.</li>
+                    </ul>
+                    <ul class="space-y-6">
+                        <li>• Entrega en 15-20 días hábiles según plan.</li>
+                        <li>• Soporte técnico incluido por 3 meses.</li>
+                        <li>• JOEX: Calidad y precisión asegurada.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <footer class="py-20 bg-soft-gray border-t border-blue-900/5 px-20 flex flex-col md:flex-row justify-between items-center text-[9px] tracking-[0.6em] text-blue-900/40 uppercase font-bold">
-        <div>© 2026 JOEX STUDIO • MEDELLÍN, COLOMBIA</div>
-        <div class="mt-10 md:mt-0">DESIGNED FOR THE GLASSES STORE</div>
+    <footer class="py-20 text-center border-t border-blue-100">
+        <div class="luxury-font text-2xl mb-4 text-blue-900">JOEX</div>
+        <p class="text-[9px] tracking-[0.5em] text-gray-400 uppercase">Medellín, Colombia • 2026</p>
     </footer>
 
+    <a href="https://wa.me/573184499437" target="_blank" class="fixed bottom-10 right-10 z-[9000] w-16 h-16 bg-[#25d366] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all">
+        <i class="fab fa-whatsapp text-3xl"></i>
+    </a>
+
+    <div onclick="toggleMusic()" class="fixed bottom-10 left-10 z-[9000] cursor-pointer w-12 h-12 bg-blue-900/10 rounded-full flex items-center justify-center text-blue-900">
+        <i id="m-btn" class="fas fa-play"></i>
+    </div>
+
     <script>
-        /* JOEX ENGINE v2.0
-           Control de Animaciones, Audio y Gráficos
-        */
+        // 1. LOADER
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            tl.to("#load-logo", { opacity: 1, scale: 1.2, duration: 1 })
+              .to("#load-name", { opacity: 1, y: -10, duration: 0.8 }, "-=0.5")
+              .to("#loader", { y: "-100%", duration: 1.2, ease: "expo.inOut", delay: 1, onComplete: startHero });
+        });
 
-        // 1. REGISTRO DE PLUGINS
-        gsap.registerPlugin(ScrollTrigger, TextPlugin);
-
-        // 2. SISTEMA DE AUDIO
-        const audio = document.getElementById('bg-music');
-        const mIcon = document.getElementById('music-btn-icon');
-        
-        function toggleMusic() {
-            if (audio.paused) {
-                audio.play();
-                mIcon.classList.replace('fa-play', 'fa-pause');
-            } else {
-                audio.pause();
-                mIcon.classList.replace('fa-pause', 'fa-play');
-            }
+        function startHero() {
+            gsap.to(".reveal", { opacity: 1, y: -20, duration: 1, stagger: 0.2 });
         }
 
-        // 3. CURSOR DINÁMICO
-        const dot = document.getElementById('cursor-dot');
-        const outline = document.getElementById('cursor-outline');
-
+        // 2. CURSOR
         window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
-
-            gsap.to(dot, { x: posX, y: posY, duration: 0.1 });
-            gsap.to(outline, { x: posX - 25, y: posY - 25, duration: 0.3 });
+            gsap.to("#cursor-dot", { x: e.clientX, y: e.clientY, duration: 0.1 });
+            gsap.to("#cursor-outline", { x: e.clientX - 20, y: e.clientY - 20, duration: 0.25 });
         });
 
-        // 4. LOADER SECUENCIAL COMPLEJO
-        function initLoader() {
-            const tl = gsap.timeline();
-
-            tl.to("#loader-img", { opacity: 1, scale: 1.1, duration: 1.5, ease: "power4.out" })
-              .to("#loader-progress-inner", { width: "100%", duration: 2, ease: "power2.inOut" }, "-=1")
-              .to("#loader-text-brand", { opacity: 1, y: -10, duration: 0.8 }, "-=0.5")
-              .to("#loader-welcome", { opacity: 1, y: -5, duration: 1 }, "-=0.3")
-              .to("#loader", { 
-                  y: "-100%", 
-                  duration: 2, 
-                  ease: "expo.inOut", 
-                  delay: 1,
-                  onComplete: startHeroAnimations 
-              });
+        // 3. GLITCH NAV
+        function glitchNav(target) {
+            const over = document.getElementById('glitch-overlay');
+            over.style.display = 'block';
+            gsap.to(over, { opacity: 1, duration: 0.1, yoyo: true, repeat: 3 });
+            setTimeout(() => {
+                gsap.to(over, { opacity: 0, duration: 0.5, onComplete: () => {
+                    over.style.display = 'none';
+                    document.querySelector(target).scrollIntoView();
+                }});
+            }, 400);
         }
 
-        function startHeroAnimations() {
-            const tl = gsap.timeline();
-            tl.to("#hero-tag", { opacity: 1, y: -20, duration: 1, ease: "power4.out" })
-              .to("#hero-main-text", { opacity: 1, y: -20, duration: 1.5, ease: "power4.out" }, "-=0.7")
-              .to("#hero-description", { opacity: 1, y: -20, duration: 1.2, ease: "power4.out" }, "-=1")
-              .to("#hero-btn-wrap", { opacity: 1, y: -20, duration: 1, ease: "power4.out" }, "-=1");
-        }
-
-        // 5. TRANSICIÓN GLITCH DE RUPTURA
-        function executeGlitchTransition() {
-            const overlay = document.getElementById('glitch-overlay');
-            overlay.style.display = 'block';
-
-            // Generar barras aleatorias
-            for(let i = 0; i < 30; i++) {
-                let bar = document.createElement('div');
-                bar.className = 'glitch-bar';
-                bar.style.top = Math.random() * 100 + "%";
-                bar.style.height = (Math.random() * 20 + 2) + "px";
-                overlay.appendChild(bar);
-            }
-
-            const tl = gsap.timeline();
-            tl.to(overlay, { opacity: 1, duration: 0.1 })
-              .to(".glitch-bar", { 
-                  x: "100%", 
-                  duration: 0.3, 
-                  stagger: { each: 0.02, from: "random" },
-                  ease: "power2.in" 
-              })
-              .to(overlay, { 
-                  opacity: 0, 
-                  duration: 0.8, 
-                  delay: 0.2, 
-                  onComplete: () => {
-                      overlay.style.display = 'none';
-                      overlay.innerHTML = '';
-                      document.getElementById('cotizaciones').scrollIntoView();
-                  }
-              });
-              
-            // Efecto de flash blanco final
-            gsap.to("body", { backgroundColor: "#00a8e8", duration: 0.1, yoyo: true, repeat: 1 });
-        }
-
-        // 6. ANIMACIONES AL SCROLEAR (REVEALS)
-        gsap.utils.toArray(".reveal-up").forEach((el) => {
-            gsap.to(el, {
-                scrollTrigger: {
-                    trigger: el,
-                    start: "top 85%",
-                    toggleActions: "play none none none"
-                },
-                opacity: 1,
-                y: 0,
-                duration: 1.5,
-                ease: "power4.out"
+        // 4. ANIMACIONES SCROLL
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.utils.toArray(".reveal").forEach(el => {
+            gsap.from(el, {
+                scrollTrigger: { trigger: el, start: "top 90%" },
+                opacity: 0, y: 30, duration: 1.2, ease: "power3.out"
             });
         });
 
-        // 7. MOTOR THREE.JS (PARTÍCULAS AZULES)
-        function initThreeCanvas() {
-            const canvas = document.getElementById('bg-canvas');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 4000;
-            const posArray = new Float32Array(particlesCount * 3);
-
-            for(let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 1500;
-            }
-
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const material = new THREE.PointsMaterial({
-                size: 2,
-                color: 0x003366,
-                transparent: true,
-                opacity: 0.6,
-                blending: THREE.AdditiveBlending
-            });
-
-            const particlesMesh = new THREE.Points(particlesGeometry, material);
-            scene.add(particlesMesh);
-
-            camera.position.z = 500;
-
-            function animate() {
-                requestAnimationFrame(animate);
-                particlesMesh.rotation.y += 0.0005;
-                particlesMesh.rotation.x += 0.0002;
-                renderer.render(scene, camera);
-            }
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-
-            animate();
+        // 5. AUDIO
+        const music = document.getElementById('bg-music');
+        function toggleMusic() {
+            const btn = document.getElementById('m-btn');
+            if(music.paused) { music.play(); btn.classList.replace('fa-play', 'fa-pause'); }
+            else { music.pause(); btn.classList.replace('fa-pause', 'fa-play'); }
         }
 
-        // 8. INICIO DE TODO
-        initLoader();
-        initThreeCanvas();
-
-        // 9. EXTRA: EFECTO MAGNETICO EN BOTONES
-        const luxuryBtns = document.querySelectorAll('.btn-luxury');
-        luxuryBtns.forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.3 });
-            });
-            btn.addEventListener('mouseleave', () => {
-                gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
-            });
-        });
-
+        // 6. THREE.JS PARTICLES
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const geo = new THREE.BufferGeometry();
+        const pts = new Float32Array(2000 * 3);
+        for(let i=0; i<6000; i++) pts[i] = (Math.random() - 0.5) * 1200;
+        geo.setAttribute('position', new THREE.BufferAttribute(pts, 3));
+        const mat = new THREE.PointsMaterial({ color: 0x003366, size: 2 });
+        const stars = new THREE.Points(geo, mat);
+        scene.add(stars);
+        camera.position.z = 400;
+        function anim() { requestAnimationFrame(anim); stars.rotation.y += 0.0008; renderer.render(scene, camera); }
+        anim();
     </script>
 </body>
 </html>
