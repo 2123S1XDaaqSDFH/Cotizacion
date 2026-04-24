@@ -1,228 +1,259 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOEX |Cotizacion Para The Glasses Store</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;900&family=Montserrat:wght@100;300;400;600;900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        :root {
-            --optica-blue: #003049;    /* Azul Profundo Optometría */
-            --optica-silver: #e2e8f0;  /* Gris Plata Quirúrgico */
-            --optica-accent: #0077b6;  /* Azul Claridad */
-            --white: #ffffff;
-            --transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
-        }
+<title>TGS Ultra Premium</title>
 
-        * { cursor: none !important; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--white); overflow-x: hidden; color: var(--optica-blue); }
-        .luxury-font { font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 0.4em; }
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-        /* LOADER PROFESIONAL */
-        #loader {
-            position: fixed; inset: 0; background: #fff; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .loader-img { 
-            width: 320px; opacity: 0; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Suaviza el fondo blanco del logo */
-            border-radius: 4px;
-        }
-        .loader-bar { width: 300px; height: 2px; background: var(--optica-silver); margin-top: 50px; position: relative; overflow: hidden; }
-        .loader-fill { position: absolute; height: 100%; background: var(--optica-blue); width: 0; }
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;900&display=swap" rel="stylesheet">
 
-        /* INTERFAZ DINÁMICA */
-        #bg-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.35; }
-        #cursor-dot { width: 6px; height: 6px; background: var(--optica-blue); border-radius: 50%; position: fixed; pointer-events: none; z-index: 11000; }
-        #cursor-outline { width: 45px; height: 45px; border: 1px solid var(--optica-accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10500; }
+<style>
 
-        /* ARQUITECTURA DE CARDS */
-        .pricing-card {
-            background: white; padding: 80px 45px;
-            border: 1px solid var(--optica-silver); transition: var(--transition);
-            position: relative;
-        }
-        .pricing-card.elite {
-            background: var(--optica-blue); color: white; transform: scale(1.12);
-            z-index: 50; border: none; box-shadow: 0 50px 100px rgba(0,48,73,0.3);
-        }
-        .pricing-card:hover { transform: translateY(-20px); border-color: var(--optica-accent); }
-        .pricing-card.elite:hover { transform: scale(1.15) translateY(-25px); }
+body{
+    font-family:'Montserrat',sans-serif;
+    margin:0;
+    background:#0b0f1a;
+    color:white;
+    overflow-x:hidden;
+}
 
-        .btn-wa {
-            display: inline-block; padding: 22px 40px; border: 2px solid var(--optica-blue);
-            font-size: 10px; font-weight: 900; letter-spacing: 0.3em; transition: 0.5s;
-            text-align: center; width: 100%; margin-top: 30px;
-        }
-        .elite .btn-wa { border-color: var(--white); color: var(--white); }
-        .elite .btn-wa:hover { background: var(--white); color: var(--optica-blue); }
+/* LOADER */
+#loader{
+    position:fixed;
+    inset:0;
+    background:#0b0f1a;
+    z-index:9999;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
 
-        /* SECCIÓN MANTENIMIENTO */
-        .mantenimiento-box {
-            background: #f8fafc; border-left: 6px solid var(--optica-accent);
-            padding: 40px; margin-top: 80px;
-        }
-    </style>
+.loader-logo{
+    width:260px;
+    filter:drop-shadow(0 0 20px rgba(255,255,255,0.2));
+}
+
+/* AURORA BACKGROUND */
+.aurora{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background: radial-gradient(circle at 20% 20%, rgba(0,119,255,0.25), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0,255,200,0.15), transparent 40%);
+    animation:moveBg 12s infinite alternate;
+}
+
+@keyframes moveBg{
+    0%{transform:scale(1);}
+    100%{transform:scale(1.2);}
+}
+
+/* GLASS CARDS */
+.glass{
+    backdrop-filter: blur(25px);
+    background: rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    border-radius:20px;
+    transition:0.4s;
+}
+
+.glass:hover{
+    transform:translateY(-12px) scale(1.03);
+    box-shadow:0 30px 100px rgba(0,0,0,0.6);
+}
+
+/* BOTONES */
+.btn{
+    padding:14px;
+    border-radius:10px;
+    font-weight:800;
+    letter-spacing:1px;
+    transition:0.3s;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#0077ff,#00d4ff);
+}
+
+.btn-primary:hover{
+    transform:scale(1.05);
+    box-shadow:0 10px 30px rgba(0,119,255,0.5);
+}
+
+.btn-light{
+    background:white;
+    color:black;
+}
+
+/* TITULOS */
+.hero-title{
+    font-size: clamp(2.5rem,6vw,5rem);
+    font-weight:900;
+    letter-spacing:-1px;
+}
+
+</style>
 </head>
+
 <body>
 
-    <div id="loader">
-        <img src="Theglasses.jpg" class="loader-img" id="loader-logo">
-        <div class="loader-bar"><div class="loader-fill" id="loader-fill"></div></div>
-        <div class="luxury-font text-[10px] mt-6 font-black text-slate-400" id="loader-text">ESTABLECIENDO FOCO • 0%</div>
+<div class="aurora"></div>
+
+<!-- LOADER -->
+<div id="loader">
+    <img src="Theglasses.jpg" class="loader-logo">
+    <div class="w-64 h-1 bg-gray-800 mt-6">
+        <div id="bar" class="h-full bg-white w-0"></div>
+    </div>
+</div>
+
+<!-- HERO -->
+<section class="min-h-screen flex flex-col justify-center items-center text-center px-6">
+
+<h1 class="hero-title">VISIÓN ESTRATÉGICA</h1>
+
+<p class="text-gray-400 mt-6 max-w-xl">
+Experiencia digital enfocada en conversión, lujo y escalabilidad para 
+<b>The Glasses Store</b>.
+</p>
+
+</section>
+
+<!-- PRICING -->
+<section class="max-w-6xl mx-auto px-6 pb-32">
+
+<div class="grid md:grid-cols-3 gap-8">
+
+<!-- CARD -->
+<div class="glass p-8 text-center">
+    <p class="text-xs text-blue-400">MODELO A</p>
+    <h3 class="text-xl font-bold mt-2">BASIC</h3>
+
+    <div class="text-4xl font-black my-6">$3.999.999</div>
+
+    <ul class="text-gray-300 space-y-2 text-sm">
+        <li>UI/UX limpio</li>
+        <li>Botón WhatsApp</li>
+        <li class="opacity-40">Sin IA</li>
+    </ul>
+
+    <button class="btn btn-primary w-full mt-8">ADQUIRIR</button>
+</div>
+
+<!-- ELITE -->
+<div class="glass p-8 text-center scale-105 relative">
+    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 px-4 py-1 rounded-full text-xs">
+        RECOMENDADO
     </div>
 
-    <audio id="bg-music" loop><source src="https://www.chosic.com/wp-content/uploads/2021/07/Paganini-La-Campanella.mp3"></audio>
-    <div id="cursor-dot"></div><div id="cursor-outline"></div>
-    <canvas id="bg-canvas"></canvas>
+    <p class="text-blue-300 text-xs">TOPE DE GAMA</p>
+    <h3 class="text-xl font-bold mt-2">ÉLITE</h3>
 
-    <nav class="fixed w-full py-10 px-12 md:px-24 flex justify-between items-center z-[1000] bg-white/95 backdrop-blur-md border-b border-slate-100">
-        <div class="luxury-font text-2xl font-black">JOEX <span class="text-accent-blue">/</span> TGS</div>
-        <div class="hidden lg:flex space-x-12 luxury-font text-[9px] font-bold">
-            <a href="#propuesta">Propuesta</a>
-            <a href="#inversion">Inversión</a>
-            <a href="#mantenimiento">Soporte</a>
-        </div>
-    </nav>
+    <div class="text-4xl font-black my-6">$7.999.999</div>
 
-    <main id="content" class="opacity-0">
-        <section id="propuesta" class="min-h-screen flex flex-col justify-center items-center text-center px-10">
-            <p class="luxury-font text-accent text-[11px] mb-10 tracking-[1.5em] reveal">Memorándum Digital Medellín 2026</p>
-            <h1 class="luxury-font text-6xl md:text-8xl font-black mb-10 reveal">CLARIDAD <br> <span class="italic font-light text-sky-600">ESTRATÉGICA</span></h1>
-            <p class="max-w-3xl text-slate-500 text-lg reveal leading-relaxed">
-                Juan, para que <strong>The Glasses Store</strong> domine el sector, la web debe ser más que una imagen: debe ser una herramienta de gestión autónoma.
-            </p>
-        </section>
+    <ul class="space-y-2 text-sm">
+        <li>IA integrada</li>
+        <li>Inventario</li>
+        <li>Animaciones PRO</li>
+        <li>SEO Google</li>
+    </ul>
 
-        <section id="inversion" class="py-40 px-10">
-            <div class="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10 items-center">
-                
-                <div class="pricing-card reveal">
-                    <span class="text-sky-600 text-[9px] font-black tracking-widest mb-8 block uppercase">Opti-Core / Base</span>
-                    <h3 class="luxury-font text-xl font-black mb-6">ESENCIAL TGS</h3>
-                    <div class="text-4xl font-black mb-10">$3.999.999</div>
-                    <ul class="text-[10px] font-bold space-y-5 uppercase tracking-widest text-slate-400">
-                        <li><i class="fa-solid fa-check mr-2"></i> Interfaz Basica</li>
-                        <li><i class="fa-solid fa-check mr-2"></i> Agendamiento WhatsApp</li>
-                        <li class="text-red-400 opacity-50 italic">Sin Animaciones Pro</li>
-                    </ul>
-                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20me%20interesa%20el%20plan%20ESENCIAL%20TGS%20para%20The%20Glasses%20Store" class="btn-wa luxury-font">ADQUIRIR</a>
-                </div>
+    <button class="btn btn-light w-full mt-8">ADQUIRIR ÉLITE</button>
+</div>
 
-                <div class="pricing-card elite reveal">
-                    <div class="absolute top-8 right-8"><span class="bg-sky-500 text-[8px] px-3 py-1 font-black">TOPE DE GAMA</span></div>
-                    <span class="text-sky-300 text-[9px] font-black tracking-widest mb-8 block uppercase">Gabinete AR / Full</span>
-                    <h3 class="luxury-font text-xl font-black mb-6">ECOSISTEMA ÉLITE</h3>
-                    <div class="text-5xl font-black mb-10">$7.999.999</div>
-                    <ul class="text-[10px] font-bold space-y-6 uppercase tracking-widest">
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Chatbot IA (Atención 24/7)</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Integración de Inventario</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Animaciones de Alto Impacto</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Animaciones GSAP</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Indexación en Google Pro</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i>  Filtros de Montura Pro</li>
-                         <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Catálogo</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Agendamiento WhatsApp</li>
-                        <li class="text-sky-300 italic">No incluye Dominio/Hosting</li>
-                    </ul>
-                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20quiero%20el%20ECOSISTEMA%20ELITE%20con%20IA%20y%20AR%20para%20The%20Glasses%20Store" class="btn-wa luxury-font">ADQUIRIR ÉLITE</a>
-                </div>
+<!-- CARD -->
+<div class="glass p-8 text-center">
+    <p class="text-xs text-blue-400">MODELO B</p>
+    <h3 class="text-xl font-bold mt-2">PRESTIGIO</h3>
 
-                <div class="pricing-card reveal">
-                    <span class="text-sky-600 text-[9px] font-black tracking-widest mb-8 block uppercase">Visión 360 / Dinámico</span>
-                    <h3 class="luxury-font text-xl font-black mb-6">PRESTIGIO 360</h3>
-                    <div class="text-4xl font-black mb-10">$5.999.999</div>
-                    <ul class="text-[10px] font-bold space-y-5 uppercase tracking-widest text-slate-400">
-                        <li><i class="fa-solid fa-bolt mr-2"></i> Animaciones GSAP</li>
-                        <li><i class="fa-solid fa-bolt mr-2"></i> Filtros de Montura Pro</li>
-                        <li><i class="fa-solid fa-bolt mr-2"></i> Catálogo Autogestionable</li>
-                    </ul>
-                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20me%20interesa%20el%20plan%20PRESTIGIO%20360%20para%20The%20Glasses%20Store" class="btn-wa luxury-font">ADQUIRIR</a>
-                </div>
+    <div class="text-4xl font-black my-6">$5.999.999</div>
 
-            </div>
+    <ul class="text-gray-300 space-y-2 text-sm">
+        <li>Animaciones GSAP</li>
+        <li>Filtros</li>
+        <li>Soporte</li>
+    </ul>
 
-            <div id="mantenimiento" class="max-w-4xl mx-auto mantenimiento-box reveal mt-32">
-                <h4 class="luxury-font text-lg font-black mb-6">Soporte Técnico & Mantenimiento</h4>
-                <p class="text-sm text-slate-600 mb-8 leading-relaxed">
-                    Para garantizar la integridad de los datos, la seguridad ante ataques y la actualización constante de scripts de IA e inventario, establecemos un cargo mensual:
-                </p>
-                <div class="flex justify-between items-center border-t border-slate-200 pt-6">
-                    <div>
-                        <span class="block font-black text-xl text-optica-blue">$799.999 <small class="text-[10px] font-normal">/ MES</small></span>
-                        <span class="text-[9px] uppercase tracking-widest font-bold text-sky-600">Plan de Protección Total</span>
-                    </div>
-                    <ul class="text-[9px] font-bold text-slate-400 uppercase space-y-2 text-right">
-                        <li>Actualización de Scripts de Seguridad</li>
-                        <li>Mantenimiento de Bases de Datos</li>
-                        <li>Backup Semanal de Inventario</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-    </main>
+    <button class="btn btn-primary w-full mt-8">ADQUIRIR</button>
+</div>
 
-    <footer class="py-20 border-t border-slate-100 text-center">
-        <p class="luxury-font text-[9px] font-black text-slate-300">© 2026 JOEX STUDIO • THE GLASSES STORE • MEDELLÍN, COLOMBIA</p>
-    </footer>
+</div>
+</section>
 
-    <script>
-        // LÓGICA DE CARGA
-        const tl = gsap.timeline();
-        window.addEventListener('load', () => {
-            tl.to("#loader-logo", { opacity: 1, scale: 1.05, duration: 1.5, ease: "power2.out" })
-              .to("#loader-fill", { width: "100%", duration: 3, onUpdate: function() {
-                  document.getElementById('loader-text').innerText = `GRADUANDO VISIÓN • ${Math.round(this.progress()*100)}%`;
-              }})
-              .to("#loader", { yPercent: -100, duration: 1.2, ease: "expo.inOut" })
-              .to("#content", { opacity: 1, duration: 1 })
-              .from(".reveal", { y: 60, opacity: 0, stagger: 0.15, duration: 1.2, ease: "power3.out" });
+<!-- MANTENIMIENTO -->
+<section class="max-w-3xl mx-auto px-6 pb-32">
+
+<div class="glass p-8">
+
+<h4 class="font-bold mb-3">Mantenimiento</h4>
+
+<p class="text-gray-400 text-sm mb-6">
+Incluye seguridad, IA y bases de datos.
+</p>
+
+<div class="flex justify-between items-center bg-black/30 p-4 rounded-lg">
+    <span class="text-xl font-black">$700.000 / mes</span>
+    <span class="text-xs text-blue-400">JOEX</span>
+</div>
+
+</div>
+
+</section>
+
+<script>
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* LOADER */
+gsap.to("#bar",{width:"100%",duration:1.5});
+gsap.to("#loader",{opacity:0,delay:1.6,duration:1,onComplete:()=>loader.remove()});
+
+/* HERO */
+gsap.from(".hero-title",{y:100,opacity:0,duration:1});
+
+/* CARDS SCROLL */
+gsap.from(".glass",{
+    scrollTrigger:{
+        trigger:".glass",
+        start:"top 80%"
+    },
+    y:100,
+    opacity:0,
+    stagger:0.2,
+    duration:1
+});
+
+/* MICROINTERACCIONES */
+document.querySelectorAll(".glass").forEach(card=>{
+    card.addEventListener("mousemove",(e)=>{
+        let x = (e.offsetX / card.clientWidth - 0.5) * 10;
+        let y = (e.offsetY / card.clientHeight - 0.5) * 10;
+
+        gsap.to(card,{
+            rotationY:x,
+            rotationX:-y,
+            transformPerspective:500,
+            duration:0.3
         });
+    });
 
-        // MOTOR 3D (ESPACIO ÓPTICO)
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        const group = new THREE.Group();
-        const geometry = new THREE.TorusGeometry(12, 0.4, 12, 40);
-        const material = new THREE.MeshBasicMaterial({ color: 0x0077b6, wireframe: true, transparent: true, opacity: 0.15 });
-
-        for(let i=0; i<25; i++) {
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set((Math.random()-0.5)*1200, (Math.random()-0.5)*1200, (Math.random()-0.5)*600);
-            mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-            group.add(mesh);
-        }
-        scene.add(group);
-        camera.position.z = 500;
-
-        window.addEventListener('mousemove', (e) => {
-            gsap.to("#cursor-dot", { x: e.clientX, y: e.clientY, duration: 0.1 });
-            gsap.to("#cursor-outline", { x: e.clientX-22, y: e.clientY-22, duration: 0.3 });
-            
-            const x = (e.clientX - window.innerWidth/2) * 0.04;
-            const y = (e.clientY - window.innerHeight/2) * 0.04;
-            gsap.to(camera.position, { x: x, y: -y, duration: 1.5 });
-            camera.lookAt(scene.position);
+    card.addEventListener("mouseleave",()=>{
+        gsap.to(card,{
+            rotationX:0,
+            rotationY:0,
+            duration:0.5
         });
+    });
+});
 
-        function animate() { requestAnimationFrame(animate); group.rotation.y += 0.0005; renderer.render(scene, camera); }
-        animate();
+</script>
 
-        // Audio Activation
-        window.addEventListener('click', () => { 
-            const audio = document.getElementById('bg-music');
-            if(audio.paused) audio.play();
-        });
-    </script>
 </body>
 </html>
