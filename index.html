@@ -3,302 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOEX | Propuesta Estratégica The Glasses Store</title>
+    <title>JOEX | Propuesta Arquitectónica The Glasses Store</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@100;300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
-        /* ------------------------------------------------------------
-        1.0 SISTEMA DE CARGA (LOADER) - THE GLASSES EXCLUSIVE
-        ------------------------------------------------------------ */
-        #loader {
+        :root {
+            --primary: #001d3d;    
+            --secondary: #003566;  
+            --accent: #0077b6;     
+            --gold: #c5a059;
+            --text-main: #0f172a;
+        }
+
+        * { cursor: none !important; box-sizing: border-box; }
+        body { 
+            background-color: #ffffff; 
+            font-family: 'Montserrat', sans-serif; 
+            color: var(--text-main); 
+            overflow: hidden; 
+        }
+
+        .luxury-font { font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 0.3em; }
+
+        /* LOADER A TODO COLOR */
+        #loader-wrapper {
             position: fixed;
             inset: 0;
-            background: #ffffff;
+            background: radial-gradient(circle at center, var(--secondary) 0%, var(--primary) 100%);
             z-index: 10000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
 
-        .loader-logo-container {
+        .loader-content {
             position: relative;
-            width: 280px;
-            margin-bottom: 40px;
-        }
-
-        .loader-logo {
-            width: 100%;
-            filter: grayscale(100%);
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
-        }
-
-        .loader-bar-bg {
-            width: 200px;
-            height: 2px;
-            background: rgba(0, 29, 61, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .loader-bar-fill {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 0%;
-            background: #001d3d;
-        }
-
-        .loader-percentage {
-            font-family: 'Cinzel', serif;
-            font-size: 10px;
-            letter-spacing: 0.4em;
-            margin-top: 20px;
-            color: #001d3d;
-            font-weight: 900;
-        }
-
-        /* ------------------------------------------------------------
-        2.0 VARIABLES Y ESTILOS BASE
-        ------------------------------------------------------------ */
-        :root {
-            --primary: #001d3d;
-            --accent: #0077b6;
-            --white: #ffffff;
-            --luxury-transition: all 1.4s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        * { cursor: none !important; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--white); overflow-x: hidden; }
-        .luxury-font { font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 0.5em; }
-
-        /* ------------------------------------------------------------
-        3.0 COMPONENTES DE INTERFAZ
-        ------------------------------------------------------------ */
-        #bg-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.25; }
-        #cursor-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; position: fixed; pointer-events: none; z-index: 11000; }
-        #cursor-outline { width: 40px; height: 40px; border: 1px solid var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10500; }
-
-        /* 4.0 CARDS DE INVERSIÓN (RECOMENDADO AL CENTRO) */
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            padding: 20px;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
             align-items: center;
         }
 
+        .spinner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top-color: var(--gold);
+            border-bottom-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* SECCIONES Y EFECTOS */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
         .pricing-card {
-            background: white;
-            padding: 80px 50px;
-            border: 1px solid rgba(0, 29, 61, 0.08);
-            transition: var(--luxury-transition);
+            background: #fff;
+            border: 1px solid rgba(0, 29, 61, 0.05);
+            padding: 50px 40px;
+            transition: all 0.5s ease;
             position: relative;
+            overflow: hidden;
         }
 
-        .pricing-card.elite {
+        .pricing-card:hover { transform: translateY(-15px); box-shadow: 0 40px 80px rgba(0,0,0,0.08); }
+
+        .featured-card {
             background: var(--primary);
-            color: white;
-            transform: scale(1.1);
-            z-index: 10;
-            box-shadow: 0 50px 100px rgba(0, 29, 61, 0.2);
+            color: #fff;
+            transform: scale(1.05);
             border: none;
+            z-index: 10;
         }
 
-        .pricing-card:hover { transform: translateY(-20px); border-color: var(--accent); }
-        .pricing-card.elite:hover { transform: scale(1.12) translateY(-25px); }
-
-        .btn-luxury {
-            display: inline-block;
-            padding: 22px 45px;
-            border: 2px solid var(--primary);
-            font-size: 10px;
+        .btn-action {
+            display: block;
+            padding: 20px;
+            text-align: center;
             font-weight: 900;
-            letter-spacing: 0.4em;
-            transition: 0.5s;
-            margin-top: 40px;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            border: 2px solid var(--primary);
+            transition: 0.3s;
         }
 
-        .elite .btn-luxury { border-color: white; color: white; }
-        .elite .btn-luxury:hover { background: white; color: var(--primary); }
+        .featured-card .btn-action { border-color: var(--accent); color: white; }
+        .featured-card .btn-action:hover { background: white; color: var(--primary); }
+
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.25; }
+        #cursor-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 11000; }
+        #cursor-outline { width: 40px; height: 40px; border: 1px solid var(--primary); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10999; }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="loader-logo-container">
-            <img src="Theglasses.jpg" alt="Logo The Glasses Store" class="loader-logo" id="main-logo">
+    <div id="loader-wrapper">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <span class="luxury-font text-white text-[12px] absolute">JOEX</span>
         </div>
-        <div class="loader-bar-bg">
-            <div class="loader-bar-fill" id="progress-fill"></div>
-        </div>
-        <div class="loader-percentage" id="load-text">INICIALIZANDO VISIÓN 0%</div>
+        <p class="text-white/50 text-[9px] mt-10 tracking-[0.8em] luxury-font">Generando Activos Digitales</p>
     </div>
-
-    <audio id="bg-music" loop>
-        <source src="https://www.chosic.com/wp-content/uploads/2021/07/Paganini-La-Campanella.mp3" type="audio/mpeg">
-    </audio>
 
     <div id="cursor-dot"></div>
     <div id="cursor-outline"></div>
     <canvas id="bg-canvas"></canvas>
 
-    <nav class="fixed w-full py-10 px-12 md:px-24 flex justify-between items-center z-[900] bg-white/80 backdrop-blur-xl border-b border-slate-50">
-        <div class="luxury-font font-black text-2xl text-blue-900">JOEX <span class="font-thin opacity-30">/</span> TGS</div>
-        <a href="https://wa.me/573184499437" class="luxury-font text-[10px] font-black border-b-2 border-primary pb-1">CONTACTO DIRECTO</a>
+    <nav class="fixed w-full py-6 px-10 glass-nav flex justify-between items-center">
+        <div class="luxury-font font-black text-xl text-blue-900 tracking-tighter">
+            JOEX <span class="font-light text-slate-300">|</span> TGS
+        </div>
+        <div class="hidden md:flex space-x-8">
+            <a href="#vision" class="luxury-font text-[9px] font-bold">Visión</a>
+            <a href="#arquitectura" class="luxury-font text-[9px] font-bold">Arquitectura</a>
+            <a href="#inversion" class="luxury-font text-[9px] font-bold">Inversión</a>
+        </div>
+        <a href="https://wa.me/573184499437" class="luxury-font text-[10px] font-black border-b-2 border-primary">WhatsApp</a>
     </nav>
 
-    <main class="opacity-0" id="main-content">
-        <section class="min-h-screen flex flex-col justify-center items-center px-10 text-center">
-            <p class="luxury-font text-accent text-[11px] mb-8 tracking-[2em] reveal">Draft Estratégico 2026</p>
-            <h1 class="luxury-font text-6xl md:text-8xl font-black mb-12 reveal">VISIÓN DE <br> <span class="italic font-light text-accent">PRECISIÓN</span></h1>
-            <p class="max-w-3xl text-slate-500 text-lg reveal leading-loose">
-                Juan, estamos aquí para respaldarte. Hemos estructurado este ecosistema para que <span class="font-bold text-primary">The Glasses Store</span> sea el referente de lujo óptico en Medellín.
+    <main class="opacity-0 transition-opacity duration-1000" id="content">
+        
+        <section id="vision" class="min-h-screen flex flex-col justify-center items-center px-6 text-center pt-20">
+            <h2 class="luxury-font text-accent text-[10px] mb-6 tracking-[1.5em] animate-pulse">Memorándum Estratégico 2026</h2>
+            <h1 class="luxury-font text-4xl md:text-7xl font-black text-primary mb-8 leading-tight">
+                EL FUTURO DE <br> <span class="italic font-light text-accent">THE GLASSES STORE</span>
+            </h1>
+            <p class="max-w-2xl text-slate-500 text-lg md:text-xl leading-relaxed mb-12">
+                Juan, no estamos construyendo un sitio web; estamos diseñando un <strong>vendedor automático 24/7</strong> que proyecta el prestigio de tu marca en cada pixel.
             </p>
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="flex items-center space-x-3 text-left p-4 bg-slate-50 rounded-lg">
+                    <i class="fa-solid fa-gem text-accent"></i>
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Diseño de Lujo</span>
+                </div>
+                <div class="flex items-center space-x-3 text-left p-4 bg-slate-50 rounded-lg">
+                    <i class="fa-solid fa-bolt text-accent"></i>
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Conversión Rápida</span>
+                </div>
+            </div>
         </section>
 
-        <section class="py-40 px-10">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-24 reveal">
-                    <h2 class="luxury-font text-4xl mb-4">Arquitecturas de Inversión</h2>
-                    <div class="w-20 h-[1px] bg-accent mx-auto"></div>
-                </div>
-
-                <div class="pricing-grid">
-                    <div class="pricing-card reveal">
-                        <span class="text-accent text-[9px] font-black tracking-widest uppercase mb-10 block">Modelo A / Prestigio</span>
-                        <h3 class="luxury-font text-xl font-bold mb-6">OPTI-CORE</h3>
-                        <div class="text-4xl font-black mb-12">$3.999.999</div>
-                        <ul class="text-[10px] space-y-6 text-slate-400 font-bold tracking-widest uppercase">
-                            <li><i class="fa-solid fa-check text-accent mr-2"></i> UI/UX de Alta Gama</li>
-                            <li><i class="fa-solid fa-check text-accent mr-2"></i> WhatsApp Bridge</li>
-                        </ul>
-                        <a href="https://wa.me/573184499437" class="btn-luxury luxury-font w-full text-center">SELECCIONAR</a>
+        <section class="py-32 bg-slate-50 px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h3 class="luxury-font text-2xl font-black mb-12">¿Por qué esta arquitectura?</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-left">
+                    <div>
+                        <h4 class="font-black text-primary mb-4">01. Posicionamiento de Autoridad</h4>
+                        <p class="text-slate-600 text-sm leading-loose">Tu competencia vende gafas. Tú vendes una experiencia visual. Nuestra interfaz está diseñada para que el precio pase a segundo plano frente al valor percibido.</p>
                     </div>
-
-                    <div class="pricing-card elite reveal">
-                        <div class="absolute top-8 right-8"><span class="text-[8px] bg-accent px-3 py-1 font-black">RECOMENDADO</span></div>
-                        <span class="text-blue-300 text-[9px] font-black tracking-widest uppercase mb-10 block">Modelo C / Élite</span>
-                        <h3 class="luxury-font text-xl font-bold mb-6">GABINETE AR</h3>
-                        <div class="text-5xl font-black mb-12">$7.999.999</div>
-                        <ul class="text-[10px] space-y-6 font-bold tracking-widest uppercase">
-                            <li class="border-b border-white/10 pb-4"><i class="fa-solid fa-crown text-accent mr-2"></i> Probador Virtual AR</li>
-                            <li class="border-b border-white/10 pb-4"><i class="fa-solid fa-crown text-accent mr-2"></i> E-Commerce Full</li>
-                            <li class="border-b border-white/10 pb-4"><i class="fa-solid fa-crown text-accent mr-2"></i> Soporte VIP 24/7</li>
-                        </ul>
-                        <a href="https://wa.me/573184499437" class="btn-luxury luxury-font w-full text-center">ADQUIRIR ÉLITE</a>
-                    </div>
-
-                    <div class="pricing-card reveal">
-                        <span class="text-accent text-[9px] font-black tracking-widest uppercase mb-10 block">Modelo B / Dinámica</span>
-                        <h3 class="luxury-font text-xl font-bold mb-6">VISIÓN 360</h3>
-                        <div class="text-4xl font-black mb-12">$5.999.999</div>
-                        <ul class="text-[10px] space-y-6 text-slate-400 font-bold tracking-widest uppercase">
-                            <li><i class="fa-solid fa-bolt text-accent mr-2"></i> Animaciones GSAP</li>
-                            <li><i class="fa-solid fa-bolt text-accent mr-2"></i> SEO Local Pro</li>
-                        </ul>
-                        <a href="https://wa.me/573184499437" class="btn-luxury luxury-font w-full text-center">SELECCIONAR</a>
+                    <div>
+                        <h4 class="font-black text-primary mb-4">02. Optimización de Tiempo</h4>
+                        <p class="text-slate-600 text-sm leading-loose">Filtros inteligentes y catálogos curados que responden a las dudas del cliente antes de que lleguen a tu chat. Menos soporte, más cierres.</p>
                     </div>
                 </div>
             </div>
         </section>
+
+        <section id="inversion" class="py-40 px-6">
+            <div class="max-w-7xl mx-auto text-center mb-20">
+                <h2 class="luxury-font text-3xl font-black mb-4">Selecciona tu Nivel de Impacto</h2>
+                <p class="text-slate-400 uppercase text-[10px] tracking-[0.5em]">Opciones escalables según tus objetivos</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+                
+                <div class="pricing-card flex flex-col">
+                    <div class="mb-10">
+                        <span class="text-accent text-[9px] font-bold tracking-widest block mb-4">FASE INICIAL</span>
+                        <h3 class="luxury-font text-2xl font-black">OPTI-CORE</h3>
+                    </div>
+                    <div class="text-5xl font-black mb-10 text-primary">$3.999.999</div>
+                    <ul class="text-[11px] space-y-6 text-slate-500 font-bold uppercase flex-grow border-t pt-10">
+                        <li><i class="fa-solid fa-check text-accent mr-3"></i> Landing Page de Alto Impacto</li>
+                        <li><i class="fa-solid fa-check text-accent mr-3"></i> Catálogo PDF / Web Interactivo</li>
+                        <li><i class="fa-solid fa-check text-accent mr-3"></i> Botón de Cierre WhatsApp</li>
+                        <li class="opacity-30 line-through"><i class="fa-solid fa-xmark mr-3"></i> SEO Local Avanzado</li>
+                    </ul>
+                    <a href="https://wa.me/573184499437" class="btn-action mt-10">INICIAR PROYECTO</a>
+                </div>
+
+                <div class="pricing-card featured-card flex flex-col shadow-2xl">
+                    <div class="absolute top-0 right-0 bg-accent text-[8px] font-black px-4 py-2 uppercase">Más Rentable</div>
+                    <div class="mb-10">
+                        <span class="text-blue-300 text-[9px] font-bold tracking-widest block mb-4">DOMINIO DE MERCADO</span>
+                        <h3 class="luxury-font text-2xl font-black">VISIÓN 360</h3>
+                    </div>
+                    <div class="text-5xl font-black mb-10 text-white">$5.999.999</div>
+                    <ul class="text-[11px] space-y-6 text-blue-100 font-bold uppercase flex-grow border-t border-white/10 pt-10">
+                        <li><i class="fa-solid fa-bolt text-blue-400 mr-3"></i> Desarrollo Web Full Dinámico</li>
+                        <li><i class="fa-solid fa-bolt text-blue-400 mr-3"></i> Animaciones de Lujo (GSAP)</li>
+                        <li><i class="fa-solid fa-bolt text-blue-400 mr-3"></i> Filtros de Marca y Estilo</li>
+                        <li><i class="fa-solid fa-bolt text-blue-400 mr-3"></i> SEO para Medellín y Área Metropol.</li>
+                    </ul>
+                    <a href="https://wa.me/573184499437" class="btn-action mt-10">ADQUIRIR ELITE</a>
+                </div>
+
+                <div class="pricing-card flex flex-col">
+                    <div class="mb-10">
+                        <span class="text-accent text-[9px] font-bold tracking-widest block mb-4">LIDERAZGO TOTAL</span>
+                        <h3 class="luxury-font text-2xl font-black">GABINETE AR</h3>
+                    </div>
+                    <div class="text-5xl font-black mb-10 text-primary">$7.999.999</div>
+                    <ul class="text-[11px] space-y-6 text-slate-500 font-bold uppercase flex-grow border-t pt-10">
+                        <li><i class="fa-solid fa-crown text-accent mr-3"></i> Probador Virtual (AR)</li>
+                        <li><i class="fa-solid fa-crown text-accent mr-3"></i> Pasarela de Pagos (E-commerce)</li>
+                        <li><i class="fa-solid fa-crown text-accent mr-3"></i> Gestión de Inventario Real</li>
+                        <li><i class="fa-solid fa-crown text-accent mr-3"></i> Soporte VIP 24/7</li>
+                    </ul>
+                    <a href="https://wa.me/573184499437" class="btn-action mt-10">SOLICITAR CONSULTORÍA</a>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="py-20 text-center border-t border-slate-100">
+            <p class="luxury-font text-xs font-black mb-4">JOEX x THE GLASSES STORE</p>
+            <p class="text-slate-400 text-[10px] tracking-widest">PROYECTO DISEÑADO EN MEDELLÍN, 2026. <br> TODOS LOS DERECHOS RESERVADOS.</p>
+        </footer>
+
     </main>
 
     <script>
-        /**
-         * JOEX ENGINE v5.0 - INTEGRACIÓN DE LOADER Y RENDER
-         */
-
-        // 1. LÓGICA DEL LOADER CON LOGO
-        const tlLoader = gsap.timeline();
-
+        // Animación de Carga
         window.addEventListener('load', () => {
-            tlLoader.to("#main-logo", { 
-                opacity: 1, 
-                scale: 1, 
-                y: 0, 
-                duration: 1.5, 
-                ease: "expo.out" 
-            })
-            .to("#progress-fill", { 
-                width: "100%", 
-                duration: 2.5, 
-                ease: "power2.inOut",
-                onUpdate: function() {
-                    const progress = Math.round(this.progress() * 100);
-                    document.getElementById('load-text').innerText = `INICIALIZANDO VISIÓN ${progress}%`;
-                }
-            }, "-=1")
-            .to("#loader", { 
-                yPercent: -100, 
-                duration: 1.2, 
-                ease: "expo.inOut",
-                delay: 0.5 
-            })
-            .to("#main-content", { 
-                opacity: 1, 
-                duration: 1 
-            }, "-=0.5")
-            .from(".reveal", { 
-                y: 50, 
-                opacity: 0, 
-                stagger: 0.2, 
-                duration: 1.5, 
-                ease: "power4.out" 
-            }, "-=0.5");
+            setTimeout(() => {
+                const tl = gsap.timeline();
+                tl.to("#loader-wrapper", { opacity: 0, duration: 1, ease: "power4.inOut" })
+                  .set("#loader-wrapper", { display: "none" })
+                  .set("body", { overflow: "auto" })
+                  .to("#content", { opacity: 1, duration: 1.5 });
+            }, 2500);
         });
 
-        // 2. MOTOR THREE.JS (FONDO DINÁMICO)
+        // Background Engine (Three.js) - Versión Elegante
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        const glassesGroup = new THREE.Group();
-        const ringGeo = new THREE.TorusGeometry(12, 0.3, 10, 40);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0x003366, wireframe: true, transparent: true, opacity: 0.1 });
+        const particles = new THREE.Group();
+        const geo = new THREE.SphereGeometry(0.1, 8, 8);
+        const mat = new THREE.MeshBasicMaterial({ color: 0x0077b6 });
 
-        for(let i=0; i<20; i++) {
-            const mesh = new THREE.Mesh(ringGeo, ringMat);
-            mesh.position.set((Math.random()-0.5)*1000, (Math.random()-0.5)*1000, (Math.random()-0.5)*500);
-            mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-            glassesGroup.add(mesh);
+        for(let i=0; i<200; i++) {
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set((Math.random()-0.5)*50, (Math.random()-0.5)*50, (Math.random()-0.5)*50);
+            particles.add(mesh);
         }
-        scene.add(glassesGroup);
-        camera.position.z = 500;
-
-        window.addEventListener('mousemove', (e) => {
-            gsap.to("#cursor-dot", { x: e.clientX, y: e.clientY, duration: 0.1 });
-            gsap.to("#cursor-outline", { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
-            
-            const x = (e.clientX - window.innerWidth/2) * 0.05;
-            const y = (e.clientY - window.innerHeight/2) * 0.05;
-            gsap.to(camera.position, { x: x, y: -y, duration: 1 });
-            camera.lookAt(scene.position);
-        });
+        scene.add(particles);
+        camera.position.z = 15;
 
         function animate() {
             requestAnimationFrame(animate);
-            glassesGroup.rotation.y += 0.001;
+            particles.rotation.y += 0.001;
             renderer.render(scene, camera);
         }
         animate();
 
-        // Música al primer click
-        window.addEventListener('mousedown', () => {
-            const audio = document.getElementById('bg-music');
-            if(audio.paused) audio.play().catch(() => {});
+        // Cursor
+        window.addEventListener('mousemove', (e) => {
+            gsap.to("#cursor-dot", { x: e.clientX, y: e.clientY, duration: 0.1 });
+            gsap.to("#cursor-outline", { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
         });
-
     </script>
 </body>
 </html>
