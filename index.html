@@ -1,298 +1,677 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+
+<html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Propuesta TGS | JOEX Studio v2.0</title>
+
+    <title>JOEX® | Agencia Digital Élite</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@100;300;600;900&display=swap" rel="stylesheet">
+
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
+
         :root {
-            --optica-blue: #001d3d;
-            --optica-accent: #0077b6;
-            --soft-gray: #f8fafc;
+
+            --gold: #c5a059;
+
+            --gold-grad: linear-gradient(135deg, #c5a059 0%, #f7efad 50%, #c5a059 100%);
+
+            --red-action: #d40000;
+
+            --black: #000000;
+
+            --white: #ffffff;
+
+            --wa-green: #25d366;
+
         }
 
-        * { cursor: none !important; }
-        body { background-color: #fff; font-family: 'Montserrat', sans-serif; color: var(--optica-blue); overflow-x: hidden; }
-        .luxury-font { font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 0.3em; }
 
-        /* LOADER */
-        #loader {
-            position: fixed; inset: 0; background: #fff; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+
+
+        body { 
+
+            background: var(--black); 
+
+            font-family: 'Montserrat', sans-serif; 
+
+            color: var(--white); 
+
+            overflow-x: hidden;
+
+            min-height: 100vh;
+
         }
-        .loader-logo { width: 280px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.02); border-radius: 12px; }
 
-        /* CANVAS 3D */
-        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.35; pointer-events: none; }
 
-        /* CURSOR */
-        #cursor-dot { width: 8px; height: 8px; background: var(--optica-blue); border-radius: 50%; position: fixed; pointer-events: none; z-index: 11000; }
-        #cursor-outline { width: 40px; height: 40px; border: 1.5px solid var(--optica-accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10500; }
 
-        /* SECCIONES */
-        .card {
-            background: white; border: 1px solid #eef2f6; border-radius: 20px;
-            padding: 4rem 2.5rem; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        /* --- BACKGROUND DINÁMICO --- */
+
+        .bg-lights {
+
+            position: fixed;
+
+            top: 0; left: 0;
+
+            width: 100%; height: 100%;
+
+            z-index: 0;
+
+            pointer-events: none;
+
         }
-        .card:hover { transform: translateY(-15px); box-shadow: 0 40px 90px rgba(0,29,61,0.08); border-color: var(--optica-accent); }
+
+
+
+        .light {
+
+            position: absolute;
+
+            width: 60vw;
+
+            height: 60vw;
+
+            border-radius: 50%;
+
+            filter: blur(160px);
+
+            opacity: 0.04;
+
+        }
+
+        .light-gold { background: var(--gold); top: -10%; left: -10%; }
+
+        .light-red { background: var(--red-action); bottom: -10%; right: -10%; }
+
+
+
+        /* --- LOADER PREMIUM --- */
+
+        #loader-portal {
+
+            position: fixed;
+
+            top: 0; left: 0; width: 100%; height: 100vh;
+
+            background: var(--black);
+
+            z-index: 10000;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .intro-content { text-align: center; }
+
+
+
+        .intro-word {
+
+            font-family: 'Cinzel', serif;
+
+            background: var(--gold-grad);
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            font-weight: 900;
+
+            letter-spacing: 20px;
+
+            opacity: 0;
+
+            display: block;
+
+            transform: scale(0.9);
+
+        }
+
+
+
+        .word-bienvenido { font-size: 2vw; }
+
+        .word-joex { font-size: 9vw; letter-spacing: 35px; margin-top: 15px; }
+
+
+
+        /* --- WHATSAPP --- */
+
+        .whatsapp-float-wrapper {
+
+            position: fixed;
+
+            bottom: 35px;
+
+            right: 35px;
+
+            z-index: 1000;
+
+            width: 60px;
+
+            height: 60px;
+
+            opacity: 0; /* Lo activamos con GSAP */
+
+        }
+
+
+
+        .whatsapp-pulse {
+
+            position: absolute;
+
+            top: 0; left: 0;
+
+            width: 100%; height: 100%;
+
+            background: var(--wa-green);
+
+            border-radius: 50%;
+
+            z-index: -1;
+
+            animation: pulseWA 2.5s infinite;
+
+        }
+
+
+
+        .whatsapp-float {
+
+            background: var(--wa-green);
+
+            width: 100%; height: 100%;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+        }
+
+        .whatsapp-float img { width: 32px; filter: brightness(0) invert(1); }
+
+        .whatsapp-float:hover { transform: scale(1.15); }
+
+
+
+        @keyframes pulseWA {
+
+            0% { transform: scale(1); opacity: 0.5; }
+
+            100% { transform: scale(1.8); opacity: 0; }
+
+        }
+
+
+
+        /* --- CANVAS --- */
+
+        #app-canvas { opacity: 0; position: relative; z-index: 10; }
+
         
-        .card.featured {
-            background: var(--optica-blue); color: white; transform: scale(1.05); z-index: 20; border: none;
-            box-shadow: 0 50px 100px rgba(0,29,61,0.2);
+
+        .nav {
+
+            display: flex; justify-content: space-between; align-items: center;
+
+            padding: 25px 8%; position: fixed; width: 100%; top: 0;
+
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 100;
+
+            border-bottom: 1px solid rgba(197, 160, 89, 0.08);
+
         }
 
-        .btn-main {
-            display: block; width: 100%; padding: 20px; border-radius: 12px;
-            text-align: center; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-            transition: 0.4s; font-size: 11px;
-        }
-        .btn-blue { background: var(--optica-blue); color: white; }
-        .featured .btn-white { background: white; color: var(--optica-blue); }
 
-        .maint-banner { border-left: 8px solid var(--optica-accent); background: var(--soft-gray); }
+
+        .gold-logo {
+
+            font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 900;
+
+            background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+
+            letter-spacing: 6px;
+
+        }
+
+
+
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+
+        .hero-title { font-family: 'Cinzel', serif; font-size: 6vw; line-height: 1.1; font-weight: 900; opacity: 0; }
+
+        .gold-text { background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+
+
+        /* PORTAFOLIO */
+
+        .portfolio { padding-bottom: 100px; }
+
+        .portfolio-header { text-align: center; padding: 150px 0 80px; opacity: 0; }
+
+        .portfolio-header h2 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--gold); letter-spacing: 15px; }
+
+
+
+        .project-row { padding: 120px 15%; border-bottom: 1px solid #111; text-align: center; }
+
+        .project-info h3 { font-family: 'Cinzel', serif; font-size: 3rem; margin-bottom: 25px; letter-spacing: 3px; }
+
+        .project-info p { color: #888; max-width: 700px; margin: 0 auto 40px; font-weight: 300; line-height: 1.9; font-size: 1.15rem; }
+
         
-        /* TABLE */
-        tr { border-bottom: 1px solid #f1f5f9; }
-        th, td { padding: 20px; text-align: left; }
+
+        .btn-project { 
+
+            color: var(--white); text-decoration: none; border-bottom: 2px solid var(--gold); 
+
+            padding-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+
+            transition: 0.4s;
+
+        }
+
+        .btn-project:hover { letter-spacing: 5px; color: var(--gold); }
+
+
+
+        /* MEGA CTA AGENCIA */
+
+        .mega-cta { padding: 150px 0; text-align: center; }
+
+        .btn-red-action {
+
+            background: var(--red-action); color: #fff; padding: 28px 70px;
+
+            font-size: 1.6rem; font-weight: 900; text-decoration: none;
+
+            text-transform: uppercase; letter-spacing: 5px;
+
+            position: relative; overflow: hidden;
+
+            display: inline-block; transition: 0.5s;
+
+        }
+
+        .btn-red-action::before {
+
+            content: ''; position: absolute; top: 0; left: -100%;
+
+            width: 100%; height: 100%;
+
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+
+            transition: 0.6s;
+
+        }
+
+        .btn-red-action:hover::before { left: 100%; }
+
+        .btn-red-action:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(212,0,0,0.4); }
+
+
+
+        /* REVIEWS / TRAYECTORIA */
+
+        .reviews { padding: 150px 10%; background: #080808; text-align: center; }
+
+        .rev-title { font-family: 'Cinzel', serif; font-size: 3rem; color: var(--gold); margin-bottom: 100px; letter-spacing: 8px; }
+
+        .reviews-slider { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; }
+
+        .review-card {
+
+            background: #111; padding: 50px; border: 1px solid rgba(197, 160, 89, 0.1);
+
+            flex: 1 1 350px; max-width: 420px; text-align: left; opacity: 0;
+
+        }
+
+        .review-card strong { color: var(--gold); display: block; margin-bottom: 20px; font-size: 1.1rem; letter-spacing: 3px; }
+
+
+
+        .legal-footer { padding: 100px; text-align: center; font-size: 0.75rem; color: #444; border-top: 1px solid #111; letter-spacing: 3px; }
+
+
+
+        @media (max-width: 768px) {
+
+            .hero-title { font-size: 12vw; }
+
+            .word-joex { font-size: 18vw; letter-spacing: 10px; }
+
+            .portfolio-header h2 { font-size: 2.5rem; }
+
+        }
+
     </style>
+
 </head>
+
 <body>
 
-    <div id="loader">
-        <img src="Theglasses.jpg" class="loader-logo" id="logo">
-        <div class="w-64 h-[2px] bg-slate-100 mt-10 overflow-hidden">
-            <div id="bar" class="h-full bg-blue-900 w-0"></div>
-        </div>
-        <p class="luxury-font text-[9px] mt-4 opacity-40">Configurando Visión 2026</p>
+
+
+    <div class="bg-lights">
+
+        <div class="light light-gold"></div>
+
+        <div class="light light-red"></div>
+
     </div>
 
-    <div id="cursor-dot"></div>
-    <div id="cursor-outline"></div>
-    <canvas id="bg-canvas"></canvas>
 
-    <nav class="fixed w-full py-8 px-12 md:px-24 flex justify-between items-center z-[1000] bg-white/80 backdrop-blur-md">
-        <div class="luxury-font font-black text-xl">JOEX <span class="text-sky-600">x</span> TGS</div>
-        <div class="hidden md:flex space-x-10 luxury-font text-[9px] font-bold">
-            <a href="#vision">Visión</a>
-            <a href="#proceso">Proceso</a>
-            <a href="#inversion">Inversión</a>
-            <a href="#faq">Soporte</a>
+
+    <div class="whatsapp-float-wrapper" id="wa-anchor">
+
+        <div class="whatsapp-pulse"></div>
+
+        <a href="https://wa.me/573184499437" class="whatsapp-float" target="_blank">
+
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+
+        </a>
+
+    </div>
+
+
+
+    <div id="loader-portal">
+
+        <div class="intro-content">
+
+            <span class="intro-word word-bienvenido">BIENVENIDO A</span>
+
+            <span class="intro-word word-joex">JOEX</span>
+
         </div>
-    </nav>
 
-    <main id="content" class="opacity-0">
-        
-        <section id="vision" class="min-h-screen flex flex-col justify-center items-center text-center px-6">
-            <p class="luxury-font text-sky-600 text-[10px] tracking-[1.5em] mb-6 reveal">Estrategia Digital Medellín</p>
-            <h1 class="text-6xl md:text-9xl font-black luxury-font mb-12 reveal">VISIÓN DE <br><span class="italic font-light text-sky-700">PRECISIÓN</span></h1>
-            <p class="max-w-2xl text-slate-500 text-lg leading-relaxed reveal">
-                Juan, el mercado de la óptica en Medellín está saturado de lo común. **The Glasses Store** no es común. Es el momento de que tu plataforma digital refleje la calidad de tus monturas.
-            </p>
-            <div class="mt-16 animate-bounce opacity-30"><i class="fa-solid fa-chevron-down"></i></div>
+    </div>
+
+
+
+    <div id="app-canvas">
+
+        <nav class="nav">
+
+            <div class="gold-logo">JOEX<span>®</span></div>
+
+        </nav>
+
+
+
+        <section class="hero">
+
+            <h1 class="hero-title" id="main-title">Forjando la élite del<br><span class="gold-text">futuro digital</span></h1>
+
         </section>
 
-        <section id="proceso" class="py-32 bg-slate-50/50">
-            <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
-                <div class="reveal">
-                    <h2 class="luxury-font text-3xl font-black mb-8 italic">Ingeniería <br> detrás del lente</h2>
-                    <p class="text-slate-500 mb-8 leading-relaxed">
-                        No solo diseñamos una web; integramos un sistema de ventas. Desde la indexación en Google hasta la gestión automatizada de inventario.
-                    </p>
-                    <div class="space-y-6">
-                        <div class="flex items-start gap-4">
-                            <span class="text-sky-600 font-black">01.</span>
-                            <div><h4 class="font-bold text-sm">FASE DE ARQUITECTURA</h4><p class="text-xs text-slate-400">Estructura SEO y flujo de usuario optimizado.</p></div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <span class="text-sky-600 font-black">02.</span>
-                            <div><h4 class="font-bold text-sm">DESARROLLO ÉLITE</h4><p class="text-xs text-slate-400">Integración de IA y catálogo dinámico.</p></div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <span class="text-sky-600 font-black">03.</span>
-                            <div><h4 class="font-bold text-sm">DESPLIEGUE & SOPORTE</h4><p class="text-xs text-slate-400">Seguridad total y mantenimiento de base de datos.</p></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 reveal">
-                    <div class="h-64 bg-white border border-slate-100 rounded-2xl flex items-center justify-center p-8 text-center">
-                        <i class="fa-solid fa-microchip text-4xl text-sky-100 mb-4 block"></i>
-                        <span class="text-[9px] font-bold uppercase tracking-widest">IA Core</span>
-                    </div>
-                    <div class="h-64 bg-white border border-slate-100 rounded-2xl flex items-center justify-center p-8 text-center mt-12">
-                        <i class="fa-solid fa-boxes-stacked text-4xl text-sky-100 mb-4 block"></i>
-                        <span class="text-[9px] font-bold uppercase tracking-widest">Stock Sync</span>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <section id="inversion" class="py-40 px-6">
-            <div class="text-center mb-24">
-                <h2 class="luxury-font text-4xl font-black mb-4">Arquitecturas de Inversión</h2>
-                <p class="text-xs font-bold text-sky-600 tracking-[0.5em] uppercase">Selecciona el futuro de tu marca</p>
+
+        <section id="proyectos" class="portfolio">
+
+            <div class="portfolio-header">
+
+                <h2>PORTAFOLIO</h2>
+
+                <p>Ecosistemas Digitales de Clase Mundial</p>
+
             </div>
 
-            <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8 items-center">
-                
-                <div class="card reveal">
-                    <p class="text-[9px] font-black text-sky-600 mb-2 uppercase">Opti-Core / Base</p>
-                    <h3 class="luxury-font text-xl font-black mb-8">MODELO A</h3>
-                    <div class="text-5xl font-black mb-10">$3.999.999</div>
-                    <ul class="text-[10px] font-bold text-slate-400 space-y-6 uppercase mb-12">
-                        <li><i class="fa-solid fa-check text-sky-500 mr-2"></i> Interfaz Basica</li>
-                        <li><i class="fa-solid fa-check text-sky-500 mr-2"></i> WhatsApp Directo</li>
-                        <li class="opacity-30 italic">Sin Integración de IA</li>
-                    </ul>
-                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20quiero%20el%20Modelo%20A" class="btn-main btn-blue">Adquirir</a>
-                </div>
 
-                <div class="card featured reveal">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-sky-500 text-[9px] px-6 py-2 rounded-full font-black">RECOMENDACIÓN JOEX</div>
-                    <p class="text-[9px] font-black text-sky-300 mb-2 uppercase">Gabinete AR / Full</p>
-                    <h3 class="luxury-font text-xl font-black mb-8">MODELO C ÉLITE</h3>
-                    <div class="text-6xl font-black mb-10">$7.999.999</div>
-                    <ul class="text-[10px] font-bold space-y-6 uppercase mb-12">
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Chatbot IA Autogestionable</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Integración de Inventario</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Animaciones GSAP Premium</li>
-                        <li><i class="fa-solid fa-crown text-sky-400 mr-2"></i> Indexación Google SEO Pro</li>
-                        <li class="text-sky-300 italic text-[8px] mt-4">No incluye dominio ni hosting</li>
-                    </ul>
-                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20quiero%20el%20MODELO%20ELITE" class="btn-main btn-white">Adquirir Élite</a>
-                </div>
 
-                <div class="card reveal">
-                    <p class="text-[9px] font-black text-sky-600 mb-2 uppercase">Prestigio  Dinámico</p>
-                    <h3 class="luxury-font text-xl font-black mb-8">MODELO B</h3>
-                    <div class="text-5xl font-black mb-10">$5.999.999</div>
-                    <ul class="text-[10px] font-bold text-slate-400 space-y-6 uppercase mb-12">
-                        <li><i class="fa-solid fa-bolt text-sky-500 mr-2"></i> Animaciones de Impacto</li>
-                        <li><i class="fa-solid fa-bolt text-sky-500 mr-2"></i> Filtros de Catálogo</li>
-                        <li><i class="fa-solid fa-bolt text-sky-500 mr-2"></i> Mejor UX de Conversión</li>
-                    </ul>
-                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20quiero%20el%20Modelo%20B" class="btn-main btn-blue">Adquirir</a>
+            <div class="project-row">
+
+                <div class="project-info">
+
+                    <h3>PC GAMER BUENOS AIRES</h3>
+
+                    <p>Optimización de alto rendimiento y arquitectura visual robusta para el mercado tecnológico.</p>
+
+                    <a href="https://2123s1xdaaqsdfh.github.io/PC-GAMER/" target="_blank" class="btn-project">Ver Ecosistema</a>
+
                 </div>
 
             </div>
 
-            <div class="max-w-4xl mx-auto maint-banner p-12 mt-32 reveal">
-                <div class="md:flex justify-between items-center">
-                    <div class="mb-8 md:mb-0">
-                        <h4 class="luxury-font text-lg font-black mb-4">Mantenimiento de Ecosistema</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed max-w-sm">
-                            Gestión mensual de bases de datos, actualización de seguridad, scripts de IA e infraestructura de datos.
-                        </p>
-                    </div>
-                    <div class="text-center">
-                        <span class="block text-4xl font-black mb-2">$700.000</span>
-                        <span class="text-[9px] font-black tracking-widest text-sky-600">MENSUALIDAD FIJA</span>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <section class="py-32 bg-white px-6">
-            <div class="max-w-5xl mx-auto overflow-x-auto reveal">
-                <h2 class="luxury-font text-2xl font-black mb-12 text-center italic">Desglose Técnico</h2>
-                <table class="w-full text-[10px] uppercase font-bold tracking-widest">
-                    <thead>
-                        <tr class="text-sky-600">
-                            <th>Característica</th><th>A</th><th>B</th><th>Élite</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-slate-400">
-                        <tr><td>IA Integrada</td><td><i class="fa-solid fa-minus"></i></td><td><i class="fa-solid fa-minus"></i></td><td class="text-sky-600">SÍ</td></tr>
-                        <tr><td>Inventario Real-Time</td><td><i class="fa-solid fa-minus"></i></td><td><i class="fa-solid fa-minus"></i></td><td class="text-sky-600">SÍ</td></tr>
-                        <tr><td>Animaciones GSAP</td><td>Básico</td><td>SÍ</td><td class="text-sky-600">ULTRA</td></tr>
-                        <tr><td>SEO Indexación</td><td>Google</td><td>Pro</td><td class="text-sky-600">Full Power</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
 
-        <section id="faq" class="py-40 px-6 text-center bg-slate-50">
-            <h2 class="luxury-font text-4xl font-black mb-16">Preguntas de Negocio</h2>
-            <div class="max-w-3xl mx-auto text-left space-y-12 mb-24">
-                <div>
-                    <h4 class="font-black text-sm mb-4">¿Por qué pagar mantenimiento?</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Una web con IA e inventario dinámico es un organismo vivo. Necesita limpieza de caché, backups de seguridad y optimización de base de datos semanal para no perder velocidad.
-                    </p>
+            <div class="project-row">
+
+                <div class="project-info">
+
+                    <h3>PROSPEKTA BPO</h3>
+
+                    <p>Arquitectura de conversión masiva y gestión de leads para expansión comercial acelerada.</p>
+
+                    <a href="https://2123s1xdaaqsdfh.github.io/Prospekta/" target="_blank" class="btn-project">Ver Ecosistema</a>
+
                 </div>
-                <div>
-                    <h4 class="font-black text-sm mb-4">¿Quién es el dueño de la web?</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Usted es el dueño total del activo digital una vez liquidado el proyecto.
-                    </p>
-                </div>
+
             </div>
+
+
+
+            <div class="project-row">
+
+                <div class="project-info">
+
+                    <h3>IMPRONTO SAS</h3>
+
+                    <p>Solidez institucional y elegancia industrial proyectada en el entorno digital de gran formato.</p>
+
+                    <a href="https://2123s1xdaaqsdfh.github.io/impronto/" target="_blank" class="btn-project">Ver Ecosistema</a>
+
+                </div>
+
+            </div>
+
             
-            <p class="luxury-font text-sm font-black mb-8 italic">Juan, el futuro es hoy o nunca.</p>
-            <a href="https://wa.me/573184499437?text=Hola%20Julian,%20quiero%20empezar%20ya" class="btn-main btn-blue inline-block max-w-xs mx-auto">Iniciar Desarrollo</a>
+
+            <div class="mega-cta">
+
+                <a href="https://wa.me/573184499437" class="btn-red-action">Agendar Consultoría</a>
+
+            </div>
+
         </section>
 
-        <footer class="py-20 border-t border-slate-100 text-center">
-            <div class="luxury-font text-[10px] font-black text-slate-300">
-                © 2026 JOEX STUDIO • THE GLASSES STORE • MEDELLÍN, COLOMBIA
+
+
+        <section class="reviews">
+
+            <h2 class="rev-title">Trayectoria Institucional</h2>
+
+            <div class="reviews-slider">
+
+                <div class="review-card">
+
+                    <strong>PROSPEKTA</strong>
+
+                    <p>"La visión tecnológica de JOEX nos ha permitido escalar operaciones a nivel regional con una confianza total en nuestra infraestructura."</p>
+
+                </div>
+
+                <div class="review-card">
+
+                    <strong>AUTOELITE</strong>
+
+                    <p>"Un estándar de diseño que no se encuentra fácilmente. Cada detalle respira lujo y funcionalidad comercial."</p>
+
+                </div>
+
+                <div class="review-card">
+
+                    <strong>TECNIBABY</strong>
+
+                    <p>"Lograron captar la calidez y la confianza institucional que nuestra marca necesitaba proyectar al mercado."</p>
+
+                </div>
+
             </div>
+
+        </section>
+
+
+
+        <footer class="legal-footer">
+
+            <p>JOEX ® 2026. MEDELLÍN, COLOMBIA. ALL RIGHTS RESERVED.</p>
+
         </footer>
 
-    </main>
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+
 
     <script>
-        // MOTOR DE CARGA
+
         window.addEventListener('load', () => {
-            gsap.to("#bar", { width: "100%", duration: 2.5, ease: "power2.inOut" });
-            gsap.to("#loader", { yPercent: -100, delay: 2.8, duration: 1.2, ease: "expo.inOut" });
-            gsap.to("#content", { opacity: 1, delay: 3.2, duration: 1 });
-            
-            // Animaciones de scroll
-            gsap.utils.toArray(".reveal").forEach(el => {
-                gsap.from(el, {
-                    scrollTrigger: el,
-                    y: 60, opacity: 0, duration: 1.5, ease: "power3.out"
-                });
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            const tl = gsap.timeline();
+
+
+
+            // 1. ANIMACIÓN DEL LOADER
+
+            tl.to(".word-bienvenido", { opacity: 1, scale: 1, y: -20, duration: 1.2, ease: "power4.out" })
+
+              .to(".word-joex", { opacity: 1, scale: 1, y: -20, duration: 1.5, ease: "power4.out" }, "-=0.8")
+
+              .to("#loader-portal", { y: "-100%", duration: 1.5, ease: "expo.inOut", delay: 0.5 })
+
+              .to("#app-canvas", { opacity: 1, duration: 0.8 }, "-=0.5")
+
+              
+
+              // 2. REVELACIÓN DEL HERO
+
+              .to("#main-title", { opacity: 1, y: -30, duration: 1.5, ease: "power3.out" }, "-=0.3")
+
+              .to("#wa-anchor", { opacity: 1, duration: 1 }, "-=0.5");
+
+
+
+            // 3. ANIMACIONES DE SCROLL PARA PROYECTOS
+
+            gsap.to(".portfolio-header", {
+
+                scrollTrigger: { trigger: ".portfolio-header", start: "top 85%" },
+
+                opacity: 1, y: -20, duration: 1.2, ease: "power2.out"
+
             });
+
+
+
+            gsap.utils.toArray(".project-row").forEach(row => {
+
+                gsap.from(row, {
+
+                    scrollTrigger: {
+
+                        trigger: row,
+
+                        start: "top 80%",
+
+                        toggleActions: "play none none reverse"
+
+                    },
+
+                    opacity: 0,
+
+                    y: 80,
+
+                    duration: 1.5,
+
+                    ease: "power3.out"
+
+                });
+
+            });
+
+
+
+            // 4. REVELACIÓN DE TRAYECTORIA (CARDS)
+
+            gsap.to(".review-card", {
+
+                scrollTrigger: {
+
+                    trigger: ".reviews",
+
+                    start: "top 75%"
+
+                },
+
+                opacity: 1,
+
+                y: -30,
+
+                stagger: 0.25,
+
+                duration: 1.2,
+
+                ease: "power2.out"
+
+            });
+
+
+
+            // 5. MOVIMIENTO SUTIL DE LUCES DE FONDO
+
+            gsap.to(".light-gold", {
+
+                x: "20vw", y: "20vh", duration: 15, repeat: -1, yoyo: true, ease: "sine.inOut"
+
+            });
+
+            gsap.to(".light-red", {
+
+                x: "-20vw", y: "-20vh", duration: 18, repeat: -1, yoyo: true, ease: "sine.inOut"
+
+            });
+
         });
 
-        // CURSOR
-        window.addEventListener('mousemove', (e) => {
-            gsap.to("#cursor-dot", { x: e.clientX, y: e.clientY, duration: 0.1 });
-            gsap.to("#cursor-outline", { x: e.clientX-20, y: e.clientY-20, duration: 0.3 });
-        });
-
-        // THREE JS BG
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        const group = new THREE.Group();
-        const material = new THREE.MeshBasicMaterial({ color: 0x0077b6, wireframe: true, transparent: true, opacity: 0.15 });
-        for(let i=0; i<10; i++) {
-            const geo = new THREE.TorusGeometry(15, 0.1, 8, 40);
-            const mesh = new THREE.Mesh(geo, material);
-            mesh.position.set(Math.random()*100-50, Math.random()*100-50, Math.random()*50-25);
-            mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-            group.add(mesh);
-        }
-        scene.add(group);
-        camera.position.z = 60;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            group.rotation.y += 0.001;
-            renderer.render(scene, camera);
-        }
-        animate();
     </script>
+
 </body>
+
 </html>
