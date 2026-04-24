@@ -1,677 +1,296 @@
 <!DOCTYPE html>
-
-<html lang="es">
-
+<html lang="es" class="scroll-smooth">
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>JOEX® | Agencia Digital Élite</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@100;300;600;900&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JOEX | Propuesta Estratégica TGS</title>
     
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
-
         :root {
-
-            --gold: #c5a059;
-
-            --gold-grad: linear-gradient(135deg, #c5a059 0%, #f7efad 50%, #c5a059 100%);
-
-            --red-action: #d40000;
-
-            --black: #000000;
-
+            --blue-deep: #001d3d;
+            --blue-accent: #0077b6;
             --white: #ffffff;
-
-            --wa-green: #25d366;
-
+            --gray-light: #f8fafc;
         }
 
-
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        /* Cursor personalizado (solo desktop) */
+        @media (min-width: 1024px) {
+            body { cursor: none !important; }
+            #cursor-dot { width: 8px; height: 8px; background: var(--blue-deep); border-radius: 50%; position: fixed; pointer-events: none; z-index: 11000; }
+            #cursor-outline { width: 40px; height: 40px; border: 1.5px solid var(--blue-accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10500; }
+        }
 
         body { 
-
-            background: var(--black); 
-
+            background-color: var(--white); 
             font-family: 'Montserrat', sans-serif; 
-
-            color: var(--white); 
-
-            overflow-x: hidden;
-
-            min-height: 100vh;
-
+            color: var(--blue-deep); 
+            overflow-x: hidden; 
+            width: 100%;
         }
 
-
-
-        /* --- BACKGROUND DINÁMICO --- */
-
-        .bg-lights {
-
-            position: fixed;
-
-            top: 0; left: 0;
-
-            width: 100%; height: 100%;
-
-            z-index: 0;
-
-            pointer-events: none;
-
+        .luxury-font { 
+            font-family: 'Cinzel', serif; 
+            text-transform: uppercase; 
+            letter-spacing: 0.2em; 
         }
 
+        /* LOADER */
+        #loader {
+            position: fixed; inset: 0; background: #fff; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .loader-logo { width: 60%; max-width: 280px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05)); }
 
-
-        .light {
-
-            position: absolute;
-
-            width: 60vw;
-
-            height: 60vw;
-
-            border-radius: 50%;
-
-            filter: blur(160px);
-
-            opacity: 0.04;
-
+        /* HERO - VISIÓN DE PRECISIÓN */
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 7rem);
+            line-height: 0.9;
         }
 
-        .light-gold { background: var(--gold); top: -10%; left: -10%; }
+        /* BACKGROUND 3D */
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.25; }
 
-        .light-red { background: var(--red-action); bottom: -10%; right: -10%; }
-
-
-
-        /* --- LOADER PREMIUM --- */
-
-        #loader-portal {
-
-            position: fixed;
-
-            top: 0; left: 0; width: 100%; height: 100vh;
-
-            background: var(--black);
-
-            z-index: 10000;
-
+        /* CARDS DE INVERSIÓN */
+        .card {
+            background: white;
+            border: 1px solid #eef2f6;
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            overflow: hidden;
-
+            flex-direction: column;
+            height: 100%;
         }
 
+        .card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 40px 80px rgba(0,29,61,0.08);
+            border-color: var(--blue-accent);
+        }
 
+        /* MODELO B - RESALTADO Y VISIBLE */
+        .card.featured {
+            background: var(--blue-deep);
+            color: white;
+            border: none;
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 30px 60px rgba(0,29,61,0.25);
+        }
 
-        .intro-content { text-align: center; }
+        .card.featured .text-slate-400 { color: #94a3b8; }
+        .card.featured .btn-main { background: white; color: var(--blue-deep); }
 
-
-
-        .intro-word {
-
-            font-family: 'Cinzel', serif;
-
-            background: var(--gold-grad);
-
-            -webkit-background-clip: text;
-
-            -webkit-text-fill-color: transparent;
-
+        .btn-main {
+            margin-top: auto;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
             font-weight: 900;
-
-            letter-spacing: 20px;
-
-            opacity: 0;
-
-            display: block;
-
-            transform: scale(0.9);
-
-        }
-
-
-
-        .word-bienvenido { font-size: 2vw; }
-
-        .word-joex { font-size: 9vw; letter-spacing: 35px; margin-top: 15px; }
-
-
-
-        /* --- WHATSAPP --- */
-
-        .whatsapp-float-wrapper {
-
-            position: fixed;
-
-            bottom: 35px;
-
-            right: 35px;
-
-            z-index: 1000;
-
-            width: 60px;
-
-            height: 60px;
-
-            opacity: 0; /* Lo activamos con GSAP */
-
-        }
-
-
-
-        .whatsapp-pulse {
-
-            position: absolute;
-
-            top: 0; left: 0;
-
-            width: 100%; height: 100%;
-
-            background: var(--wa-green);
-
-            border-radius: 50%;
-
-            z-index: -1;
-
-            animation: pulseWA 2.5s infinite;
-
-        }
-
-
-
-        .whatsapp-float {
-
-            background: var(--wa-green);
-
-            width: 100%; height: 100%;
-
-            border-radius: 50%;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-        }
-
-        .whatsapp-float img { width: 32px; filter: brightness(0) invert(1); }
-
-        .whatsapp-float:hover { transform: scale(1.15); }
-
-
-
-        @keyframes pulseWA {
-
-            0% { transform: scale(1); opacity: 0.5; }
-
-            100% { transform: scale(1.8); opacity: 0; }
-
-        }
-
-
-
-        /* --- CANVAS --- */
-
-        #app-canvas { opacity: 0; position: relative; z-index: 10; }
-
-        
-
-        .nav {
-
-            display: flex; justify-content: space-between; align-items: center;
-
-            padding: 25px 8%; position: fixed; width: 100%; top: 0;
-
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 100;
-
-            border-bottom: 1px solid rgba(197, 160, 89, 0.08);
-
-        }
-
-
-
-        .gold-logo {
-
-            font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 900;
-
-            background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-
-            letter-spacing: 6px;
-
-        }
-
-
-
-        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-
-        .hero-title { font-family: 'Cinzel', serif; font-size: 6vw; line-height: 1.1; font-weight: 900; opacity: 0; }
-
-        .gold-text { background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-
-
-        /* PORTAFOLIO */
-
-        .portfolio { padding-bottom: 100px; }
-
-        .portfolio-header { text-align: center; padding: 150px 0 80px; opacity: 0; }
-
-        .portfolio-header h2 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--gold); letter-spacing: 15px; }
-
-
-
-        .project-row { padding: 120px 15%; border-bottom: 1px solid #111; text-align: center; }
-
-        .project-info h3 { font-family: 'Cinzel', serif; font-size: 3rem; margin-bottom: 25px; letter-spacing: 3px; }
-
-        .project-info p { color: #888; max-width: 700px; margin: 0 auto 40px; font-weight: 300; line-height: 1.9; font-size: 1.15rem; }
-
-        
-
-        .btn-project { 
-
-            color: var(--white); text-decoration: none; border-bottom: 2px solid var(--gold); 
-
-            padding-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
-
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 10px;
             transition: 0.4s;
-
+            background: var(--blue-deep);
+            color: white;
         }
 
-        .btn-project:hover { letter-spacing: 5px; color: var(--gold); }
+        .btn-main:hover { transform: scale(1.03); filter: brightness(1.1); }
 
-
-
-        /* MEGA CTA AGENCIA */
-
-        .mega-cta { padding: 150px 0; text-align: center; }
-
-        .btn-red-action {
-
-            background: var(--red-action); color: #fff; padding: 28px 70px;
-
-            font-size: 1.6rem; font-weight: 900; text-decoration: none;
-
-            text-transform: uppercase; letter-spacing: 5px;
-
-            position: relative; overflow: hidden;
-
-            display: inline-block; transition: 0.5s;
-
+        /* TABLA MÓVIL */
+        .table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 2rem;
+            border-radius: 15px;
+            border: 1px solid #f1f5f9;
         }
 
-        .btn-red-action::before {
+        table { width: 100%; min-width: 600px; text-transform: uppercase; font-size: 10px; font-weight: 800; }
+        th, td { padding: 20px; border-bottom: 1px solid #f1f5f9; }
 
-            content: ''; position: absolute; top: 0; left: -100%;
-
-            width: 100%; height: 100%;
-
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
-
-            transition: 0.6s;
-
-        }
-
-        .btn-red-action:hover::before { left: 100%; }
-
-        .btn-red-action:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(212,0,0,0.4); }
-
-
-
-        /* REVIEWS / TRAYECTORIA */
-
-        .reviews { padding: 150px 10%; background: #080808; text-align: center; }
-
-        .rev-title { font-family: 'Cinzel', serif; font-size: 3rem; color: var(--gold); margin-bottom: 100px; letter-spacing: 8px; }
-
-        .reviews-slider { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; }
-
-        .review-card {
-
-            background: #111; padding: 50px; border: 1px solid rgba(197, 160, 89, 0.1);
-
-            flex: 1 1 350px; max-width: 420px; text-align: left; opacity: 0;
-
-        }
-
-        .review-card strong { color: var(--gold); display: block; margin-bottom: 20px; font-size: 1.1rem; letter-spacing: 3px; }
-
-
-
-        .legal-footer { padding: 100px; text-align: center; font-size: 0.75rem; color: #444; border-top: 1px solid #111; letter-spacing: 3px; }
-
-
-
-        @media (max-width: 768px) {
-
-            .hero-title { font-size: 12vw; }
-
-            .word-joex { font-size: 18vw; letter-spacing: 10px; }
-
-            .portfolio-header h2 { font-size: 2.5rem; }
-
-        }
-
+        /* REVEAL ANIMATION */
+        .reveal { opacity: 0; transform: translateY(40px); }
     </style>
-
 </head>
-
 <body>
 
-
-
-    <div class="bg-lights">
-
-        <div class="light light-gold"></div>
-
-        <div class="light light-red"></div>
-
-    </div>
-
-
-
-    <div class="whatsapp-float-wrapper" id="wa-anchor">
-
-        <div class="whatsapp-pulse"></div>
-
-        <a href="https://wa.me/573184499437" class="whatsapp-float" target="_blank">
-
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-
-        </a>
-
-    </div>
-
-
-
-    <div id="loader-portal">
-
-        <div class="intro-content">
-
-            <span class="intro-word word-bienvenido">BIENVENIDO A</span>
-
-            <span class="intro-word word-joex">JOEX</span>
-
+    <div id="loader">
+        <img src="Theglasses.jpg" class="loader-logo">
+        <div class="w-48 h-[1px] bg-slate-100 mt-10 overflow-hidden">
+            <div id="bar" class="h-full bg-blue-900 w-0"></div>
         </div>
-
     </div>
 
+    <div id="cursor-dot" class="hidden lg:block"></div>
+    <div id="cursor-outline" class="hidden lg:block"></div>
+    <canvas id="bg-canvas"></canvas>
 
+    <nav class="fixed w-full py-6 px-6 md:px-20 flex justify-between items-center z-[1000] bg-white/80 backdrop-blur-lg border-b border-slate-50">
+        <div class="luxury-font font-black text-xl tracking-tighter">JOEX <span class="text-sky-600">|</span> TGS</div>
+        <a href="https://wa.me/573184499437" class="luxury-font text-[9px] font-black bg-blue-900 text-white px-5 py-2 rounded-full">Contacto</a>
+    </nav>
 
-    <div id="app-canvas">
-
-        <nav class="nav">
-
-            <div class="gold-logo">JOEX<span>®</span></div>
-
-        </nav>
-
-
-
-        <section class="hero">
-
-            <h1 class="hero-title" id="main-title">Forjando la élite del<br><span class="gold-text">futuro digital</span></h1>
-
+    <main id="content" class="opacity-0">
+        
+        <section class="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
+            <p class="luxury-font text-sky-600 text-[9px] md:text-[11px] tracking-[1.5em] mb-8 reveal">Memorándum Digital 2026</p>
+            <h1 class="hero-title font-black luxury-font mb-12 reveal">VISIÓN DE <br> <span class="italic font-light text-sky-700">PRECISIÓN</span></h1>
+            <p class="max-w-2xl text-slate-500 text-sm md:text-lg leading-relaxed reveal px-4">
+                Juan, sabemos que no es una decisión sencilla, pero queremos que sepas que <b>te apoyamos en todo lo que necesites</b>. Hemos diseñado estas 3 arquitecturas para elevar a <b>The Glasses Store</b>.
+            </p>
         </section>
 
+        <section class="py-32 px-6 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-stretch">
+                
+                <div class="card reveal">
+                    <p class="text-[9px] font-black text-sky-600 mb-2 uppercase">Core / Base</p>
+                    <h3 class="luxury-font text-xl font-black mb-8">MODELO A</h3>
+                    <div class="text-4xl font-black mb-10">$3.999.999</div>
+                    <ul class="text-[10px] font-bold text-slate-400 space-y-5 uppercase mb-12">
+                        <li><i class="fa-solid fa-check text-sky-500 mr-2"></i> UI/UX de Alta Gama</li>
+                        <li><i class="fa-solid fa-check text-sky-500 mr-2"></i> WhatsApp Bridge</li>
+                    </ul>
+                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20me%20interesa%20el%20Modelo%20A" class="btn-main">Adquirir</a>
+                </div>
 
+                <div class="card featured reveal md:-mt-8 md:mb-8 shadow-2xl">
+                    <p class="text-[9px] font-black text-sky-300 mb-2 uppercase">Recomendado / Pro</p>
+                    <h3 class="luxury-font text-xl font-black mb-8">MODELO B</h3>
+                    <div class="text-5xl font-black mb-10">$5.999.999</div>
+                    <ul class="text-[10px] font-bold space-y-5 uppercase mb-12">
+                        <li><i class="fa-solid fa-bolt text-sky-400 mr-2"></i> Animaciones GSAP</li>
+                        <li><i class="fa-solid fa-bolt text-sky-400 mr-2"></i> Filtros de Catálogo</li>
+                        <li><i class="fa-solid fa-bolt text-sky-400 mr-2"></i> SEO Optimizado</li>
+                    </ul>
+                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20me%20interesa%20el%20Modelo%20B" class="btn-main">Adquirir B</a>
+                </div>
 
-        <section id="proyectos" class="portfolio">
-
-            <div class="portfolio-header">
-
-                <h2>PORTAFOLIO</h2>
-
-                <p>Ecosistemas Digitales de Clase Mundial</p>
-
-            </div>
-
-
-
-            <div class="project-row">
-
-                <div class="project-info">
-
-                    <h3>PC GAMER BUENOS AIRES</h3>
-
-                    <p>Optimización de alto rendimiento y arquitectura visual robusta para el mercado tecnológico.</p>
-
-                    <a href="https://2123s1xdaaqsdfh.github.io/PC-GAMER/" target="_blank" class="btn-project">Ver Ecosistema</a>
-
+                <div class="card reveal">
+                    <p class="text-[9px] font-black text-sky-600 mb-2 uppercase">Élite / Ecosistema</p>
+                    <h3 class="luxury-font text-xl font-black mb-8">MODELO C</h3>
+                    <div class="text-4xl font-black mb-10">$7.999.999</div>
+                    <ul class="text-[10px] font-bold text-slate-400 space-y-5 uppercase mb-12">
+                        <li><i class="fa-solid fa-crown text-sky-500 mr-2"></i> Chatbot IA Autogestión</li>
+                        <li><i class="fa-solid fa-crown text-sky-500 mr-2"></i> Gestión de Inventario</li>
+                        <li class="italic text-[8px] mt-4">No incluye dominio/hosting</li>
+                    </ul>
+                    <a href="https://wa.me/573184499437?text=Hola%20Julian,%20me%20interesa%20el%20Modelo%20C%20Elite" class="btn-main">Adquirir C</a>
                 </div>
 
             </div>
-
-
-
-            <div class="project-row">
-
-                <div class="project-info">
-
-                    <h3>PROSPEKTA BPO</h3>
-
-                    <p>Arquitectura de conversión masiva y gestión de leads para expansión comercial acelerada.</p>
-
-                    <a href="https://2123s1xdaaqsdfh.github.io/Prospekta/" target="_blank" class="btn-project">Ver Ecosistema</a>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="project-row">
-
-                <div class="project-info">
-
-                    <h3>IMPRONTO SAS</h3>
-
-                    <p>Solidez institucional y elegancia industrial proyectada en el entorno digital de gran formato.</p>
-
-                    <a href="https://2123s1xdaaqsdfh.github.io/impronto/" target="_blank" class="btn-project">Ver Ecosistema</a>
-
-                </div>
-
-            </div>
-
-            
-
-            <div class="mega-cta">
-
-                <a href="https://wa.me/573184499437" class="btn-red-action">Agendar Consultoría</a>
-
-            </div>
-
         </section>
 
-
-
-        <section class="reviews">
-
-            <h2 class="rev-title">Trayectoria Institucional</h2>
-
-            <div class="reviews-slider">
-
-                <div class="review-card">
-
-                    <strong>PROSPEKTA</strong>
-
-                    <p>"La visión tecnológica de JOEX nos ha permitido escalar operaciones a nivel regional con una confianza total en nuestra infraestructura."</p>
-
+        <section class="px-6 pb-32">
+            <div class="max-w-4xl mx-auto p-10 bg-slate-50 border-l-8 border-sky-600 rounded-xl reveal">
+                <div class="md:flex justify-between items-center">
+                    <div>
+                        <h4 class="luxury-font text-lg font-black mb-2">Soporte Estratégico</h4>
+                        <p class="text-xs text-slate-500 max-w-sm">Mantenimiento de IA, seguridad de base de datos y actualizaciones de stock.</p>
+                    </div>
+                    <div class="mt-8 md:mt-0 text-center md:text-right">
+                        <p class="text-3xl font-black">$700.000</p>
+                        <p class="text-[9px] font-bold text-sky-600 uppercase tracking-widest">Fee Mensual</p>
+                    </div>
                 </div>
-
-                <div class="review-card">
-
-                    <strong>AUTOELITE</strong>
-
-                    <p>"Un estándar de diseño que no se encuentra fácilmente. Cada detalle respira lujo y funcionalidad comercial."</p>
-
-                </div>
-
-                <div class="review-card">
-
-                    <strong>TECNIBABY</strong>
-
-                    <p>"Lograron captar la calidez y la confianza institucional que nuestra marca necesitaba proyectar al mercado."</p>
-
-                </div>
-
             </div>
-
         </section>
 
+        <section class="py-20 px-6 bg-white">
+            <div class="max-w-5xl mx-auto reveal">
+                <h2 class="luxury-font text-2xl font-black mb-12 text-center">Desglose de Funciones</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead class="bg-slate-50">
+                            <tr class="text-sky-700">
+                                <th class="text-left">Característica</th><th>Mod. A</th><th>Mod. B</th><th>Mod. C</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center text-slate-400">
+                            <tr><td class="text-left text-blue-900">Inteligencia Artificial</td><td>—</td><td>—</td><td>SÍ</td></tr>
+                            <tr><td class="text-left text-blue-900">Sincronización Stock</td><td>—</td><td>SÍ</td><td>SÍ</td></tr>
+                            <tr><td class="text-left text-blue-900">Animaciones Premium</td><td>Básico</td><td>SÍ</td><td>SÍ</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-
-        <footer class="legal-footer">
-
-            <p>JOEX ® 2026. MEDELLÍN, COLOMBIA. ALL RIGHTS RESERVED.</p>
-
+        <footer class="py-20 border-t text-center">
+            <div class="luxury-font text-[9px] font-black text-slate-300">
+                © 2026 JOEX STUDIO • MEDELLÍN, COLOMBIA
+            </div>
         </footer>
 
-    </div>
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-
+    </main>
 
     <script>
-
+        // [ANIMACIONES DE CARGA]
         window.addEventListener('load', () => {
-
-            gsap.registerPlugin(ScrollTrigger);
-
-            const tl = gsap.timeline();
-
-
-
-            // 1. ANIMACIÓN DEL LOADER
-
-            tl.to(".word-bienvenido", { opacity: 1, scale: 1, y: -20, duration: 1.2, ease: "power4.out" })
-
-              .to(".word-joex", { opacity: 1, scale: 1, y: -20, duration: 1.5, ease: "power4.out" }, "-=0.8")
-
-              .to("#loader-portal", { y: "-100%", duration: 1.5, ease: "expo.inOut", delay: 0.5 })
-
-              .to("#app-canvas", { opacity: 1, duration: 0.8 }, "-=0.5")
-
-              
-
-              // 2. REVELACIÓN DEL HERO
-
-              .to("#main-title", { opacity: 1, y: -30, duration: 1.5, ease: "power3.out" }, "-=0.3")
-
-              .to("#wa-anchor", { opacity: 1, duration: 1 }, "-=0.5");
-
-
-
-            // 3. ANIMACIONES DE SCROLL PARA PROYECTOS
-
-            gsap.to(".portfolio-header", {
-
-                scrollTrigger: { trigger: ".portfolio-header", start: "top 85%" },
-
-                opacity: 1, y: -20, duration: 1.2, ease: "power2.out"
-
-            });
-
-
-
-            gsap.utils.toArray(".project-row").forEach(row => {
-
-                gsap.from(row, {
-
-                    scrollTrigger: {
-
-                        trigger: row,
-
-                        start: "top 80%",
-
-                        toggleActions: "play none none reverse"
-
-                    },
-
-                    opacity: 0,
-
-                    y: 80,
-
-                    duration: 1.5,
-
-                    ease: "power3.out"
-
+            gsap.to("#bar", { width: "100%", duration: 2, ease: "power2.inOut" });
+            gsap.to("#loader", { yPercent: -100, delay: 2.3, duration: 1.2, ease: "expo.inOut" });
+            gsap.to("#content", { opacity: 1, delay: 2.8, duration: 1 });
+            
+            // GSAP Scroll Reveal
+            gsap.utils.toArray(".reveal").forEach(el => {
+                gsap.to(el, {
+                    scrollTrigger: { trigger: el, start: "top 85%" },
+                    opacity: 1, y: 0, duration: 1.2, ease: "power3.out"
                 });
-
             });
-
-
-
-            // 4. REVELACIÓN DE TRAYECTORIA (CARDS)
-
-            gsap.to(".review-card", {
-
-                scrollTrigger: {
-
-                    trigger: ".reviews",
-
-                    start: "top 75%"
-
-                },
-
-                opacity: 1,
-
-                y: -30,
-
-                stagger: 0.25,
-
-                duration: 1.2,
-
-                ease: "power2.out"
-
-            });
-
-
-
-            // 5. MOVIMIENTO SUTIL DE LUCES DE FONDO
-
-            gsap.to(".light-gold", {
-
-                x: "20vw", y: "20vh", duration: 15, repeat: -1, yoyo: true, ease: "sine.inOut"
-
-            });
-
-            gsap.to(".light-red", {
-
-                x: "-20vw", y: "-20vh", duration: 18, repeat: -1, yoyo: true, ease: "sine.inOut"
-
-            });
-
         });
 
+        // [CURSOR LOGIC]
+        if(window.innerWidth > 1024) {
+            window.addEventListener('mousemove', (e) => {
+                gsap.to("#cursor-dot", { x: e.clientX, y: e.clientY, duration: 0.1 });
+                gsap.to("#cursor-outline", { x: e.clientX-20, y: e.clientY-20, duration: 0.3 });
+            });
+        }
+
+        // [THREE.JS BACKGROUND]
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Geometría abstracta (simulando lentes/aros)
+        const group = new THREE.Group();
+        const material = new THREE.MeshBasicMaterial({ color: 0x0077b6, wireframe: true, transparent: true, opacity: 0.12 });
+        for(let i=0; i<12; i++) {
+            const geo = new THREE.TorusGeometry(Math.random()*15 + 5, 0.05, 8, 50);
+            const mesh = new THREE.Mesh(geo, material);
+            mesh.position.set(Math.random()*80-40, Math.random()*80-40, Math.random()*40-20);
+            mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+            group.add(mesh);
+        }
+        scene.add(group);
+        camera.position.z = 60;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            group.rotation.y += 0.0008;
+            group.rotation.x += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
-
 </body>
-
 </html>
